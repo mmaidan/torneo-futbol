@@ -1,5 +1,5 @@
 export type TournamentFormat = 'league' | 'groups_playoffs' | 'knockout';
-export type TournamentModality = 'f5' | 'f7' | 'f8' | 'f11';
+export type TournamentModality = 'f5' | 'f6' | 'f7' | 'f8' | 'f11';
 
 export interface Player {
   id: string;

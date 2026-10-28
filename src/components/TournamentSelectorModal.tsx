@@ -223,6 +223,7 @@ export const TournamentSelectorModal: React.FC<TournamentSelectorModalProps> = (
                     className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white"
                   >
                     <option value="f5">Fútbol 5 (Sintético / Sala)</option>
+                    <option value="f6">Fútbol 6 (Amateur / 6 vs 6)</option>
                     <option value="f7">Fútbol 7 (Amateur)</option>
                     <option value="f8">Fútbol 8</option>
                     <option value="f11">Fútbol 11 (Cancha Grande)</option>

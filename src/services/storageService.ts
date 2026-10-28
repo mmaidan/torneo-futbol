@@ -9,14 +9,24 @@ export function loadAllTournaments(): Tournament[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY_TOURNAMENTS);
     if (!raw) {
-      // First time loading: set default demo tournament
+      // First time loading: set default tournament
       const initial = [initialMockTournament];
       localStorage.setItem(STORAGE_KEY_TOURNAMENTS, JSON.stringify(initial));
       localStorage.setItem(STORAGE_KEY_ACTIVE_ID, initialMockTournament.id);
       return initial;
     }
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) && parsed.length > 0 ? parsed : [initialMockTournament];
+    const parsed: Tournament[] = JSON.parse(raw);
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      return [initialMockTournament];
+    }
+    // Ensure "El Campeonato del Millón" is present and active
+    const millon = parsed.find((t) => t.id === initialMockTournament.id);
+    if (!millon) {
+      parsed.unshift(initialMockTournament);
+      localStorage.setItem(STORAGE_KEY_TOURNAMENTS, JSON.stringify(parsed));
+      localStorage.setItem(STORAGE_KEY_ACTIVE_ID, initialMockTournament.id);
+    }
+    return parsed;
   } catch (err) {
     console.error('Error loading tournaments from localStorage:', err);
     return [initialMockTournament];

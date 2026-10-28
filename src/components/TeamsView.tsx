@@ -216,7 +216,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                     <div className="min-w-0">
                       <h4 className="text-sm font-bold text-white truncate">{team.name}</h4>
                       <p className="text-xs text-slate-400 font-mono">
-                        {team.shortName} • {team.players.length} jugadores
+                        {team.shortName} • {team.players.length}/18 jugadores
                       </p>
                     </div>
                   </div>
@@ -379,6 +379,9 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                   />
                   <div>
                     <h3 className="text-lg font-black text-white">{selectedTeam.name}</h3>
+                    <p className="text-xs text-brand-400 font-semibold">
+                      Plantel: {selectedTeam.players.length} / 18 jugadores • Fútbol 6
+                    </p>
                     <div className="flex items-center gap-3 text-xs text-slate-400 mt-0.5">
                       {selectedTeam.delegateName && (
                         <span className="flex items-center gap-1">
