@@ -1,0 +1,12 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Reglas para la colección de torneos
+    match /tournaments/{tournamentId} {
+      // Permitir lectura a todos (para que los jugadores vean fixture y tabla)
+      allow read: if true;
+      // Permitir escritura para actualizar resultados y equipos
+      allow write: if true;
+    }
+  }
+}

@@ -9,7 +9,8 @@ import {
 } from './services/storageService';
 import { 
   getSavedFirebaseConfig, 
-  subscribeToTournamentCloud 
+  subscribeToAllTournamentsCloud,
+  deleteTournamentFromCloud
 } from './services/firebase';
 import { Navbar } from './components/Navbar';
 import { DashboardOverview } from './components/DashboardOverview';
@@ -54,17 +55,21 @@ export const App: React.FC = () => {
     const config = getSavedFirebaseConfig();
     setIsCloudSynced(!!config);
 
-    if (config && currentTournament) {
-      const unsub = subscribeToTournamentCloud(currentTournament.id, (cloudTournament) => {
-        setTournaments((prev) => 
-          prev.map((t) => (t.id === cloudTournament.id ? cloudTournament : t))
-        );
+    if (config) {
+      const unsub = subscribeToAllTournamentsCloud((cloudTournaments) => {
+        if (cloudTournaments && cloudTournaments.length > 0) {
+          setTournaments(cloudTournaments);
+          setActiveId((prevId) => {
+            const exists = cloudTournaments.some((t) => t.id === prevId);
+            return exists ? prevId : cloudTournaments[0].id;
+          });
+        }
       });
       return () => {
         if (unsub) unsub();
       };
     }
-  }, [currentTournament?.id]);
+  }, []);
 
   // Handlers for modifying tournament
   const handleUpdateTournament = (updated: Tournament) => {
@@ -81,6 +86,7 @@ export const App: React.FC = () => {
   };
 
   const handleDeleteTournament = (id: string) => {
+    deleteTournamentFromCloud(id).catch(console.error);
     const updated = deleteTournament(id);
     setTournaments(updated);
     setActiveId(updated[0]?.id || '');

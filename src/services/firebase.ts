@@ -5,6 +5,7 @@ import {
   doc, 
   setDoc, 
   getDoc, 
+  deleteDoc,
   onSnapshot, 
   collection, 
   getDocs,
@@ -95,6 +96,23 @@ export async function syncTournamentToCloud(tournament: Tournament): Promise<boo
 }
 
 /**
+ * Delete a tournament from Cloud Firestore
+ */
+export async function deleteTournamentFromCloud(tournamentId: string): Promise<boolean> {
+  const db = getFirebaseFirestore();
+  if (!db) return false;
+
+  try {
+    const tournamentRef = doc(db, 'tournaments', tournamentId);
+    await deleteDoc(tournamentRef);
+    return true;
+  } catch (error) {
+    console.error('Error deleting tournament from Firestore:', error);
+    return false;
+  }
+}
+
+/**
  * Fetch all tournaments from Cloud Firestore
  */
 export async function fetchTournamentsFromCloud(): Promise<Tournament[]> {
@@ -111,6 +129,34 @@ export async function fetchTournamentsFromCloud(): Promise<Tournament[]> {
   } catch (error) {
     console.error('Error fetching tournaments from Firestore:', error);
     return [];
+  }
+}
+
+/**
+ * Subscribe to real-time changes of all tournaments from Cloud Firestore
+ */
+export function subscribeToAllTournamentsCloud(
+  callback: (tournaments: Tournament[]) => void
+): Unsubscribe | null {
+  const db = getFirebaseFirestore();
+  if (!db) return null;
+
+  try {
+    const tournamentsCol = collection(db, 'tournaments');
+    return onSnapshot(tournamentsCol, (querySnap) => {
+      const list: Tournament[] = [];
+      querySnap.forEach((docSnap) => {
+        list.push(docSnap.data() as Tournament);
+      });
+      if (list.length > 0) {
+        callback(list);
+      }
+    }, (error) => {
+      console.warn('Firestore collection subscription error:', error);
+    });
+  } catch (error) {
+    console.error('Could not subscribe to tournaments collection:', error);
+    return null;
   }
 }
 
