@@ -24,6 +24,15 @@ export interface FirebaseConfig {
 
 const STORAGE_KEY_FIREBASE_CONFIG = 'copagol_firebase_config';
 
+export const DEFAULT_FIREBASE_CONFIG: FirebaseConfig = {
+  apiKey: "AIzaSyDoB-iIdUP_pMiqNu7Az40uysImuTtp944",
+  authDomain: "torneo-futbol-ae11a.firebaseapp.com",
+  projectId: "torneo-futbol-ae11a",
+  storageBucket: "torneo-futbol-ae11a.firebasestorage.app",
+  messagingSenderId: "857662040266",
+  appId: "1:857662040266:web:cbdf504baa9a6c56a76c33",
+};
+
 export function getSavedFirebaseConfig(): FirebaseConfig | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY_FIREBASE_CONFIG);
@@ -44,7 +53,8 @@ export function getSavedFirebaseConfig(): FirebaseConfig | null {
     };
   }
 
-  return null;
+  // Built-in default configuration
+  return DEFAULT_FIREBASE_CONFIG;
 }
 
 export function saveFirebaseConfig(config: FirebaseConfig): void {
