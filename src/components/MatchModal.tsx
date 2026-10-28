@@ -181,7 +181,6 @@ export const MatchModal: React.FC<MatchModalProps> = ({
                 className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-brand-500"
               >
                 <option value="scheduled">Programado</option>
-                <option value="live">🔴 En Juego (Live)</option>
                 <option value="finished">Finalizado</option>
                 <option value="postponed">Postergado</option>
               </select>

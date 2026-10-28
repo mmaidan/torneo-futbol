@@ -251,7 +251,7 @@ export const initialMockTournament: Tournament = {
       ]
     },
 
-    // Fecha 3 (Próxima fecha / En curso)
+    // Fecha 3
     {
       id: 'match_d_7',
       tournamentId: 'torneo_demo_f7',
@@ -261,10 +261,10 @@ export const initialMockTournament: Tournament = {
       awayTeamId: 'team_4',
       homeScore: 2,
       awayScore: 1,
-      status: 'live',
+      status: 'finished',
       date: '2026-10-28',
       time: '20:00',
-      pitch: 'Cancha Principal (C1)',
+      pitch: 'Cancha 1',
       referee: 'Juan Carlos Loustau',
       events: [
         { id: 'ev_30', matchId: 'match_d_7', teamId: 'team_1', playerId: 'p_1_6', type: 'goal', minute: 14 },

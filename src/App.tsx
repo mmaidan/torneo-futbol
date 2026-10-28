@@ -13,10 +13,8 @@ import {
   deleteTournamentFromCloud
 } from './services/firebase';
 import { Navbar } from './components/Navbar';
-import { DashboardOverview } from './components/DashboardOverview';
 import { FixtureView } from './components/FixtureView';
 import { StandingsView } from './components/StandingsView';
-import { BracketView } from './components/BracketView';
 import { TeamsView } from './components/TeamsView';
 import { StatsView } from './components/StatsView';
 import { MatchModal } from './components/MatchModal';
@@ -24,20 +22,17 @@ import { TournamentSelectorModal } from './components/TournamentSelectorModal';
 import { FirebaseConfigModal } from './components/FirebaseConfigModal';
 import { ShareModal } from './components/ShareModal';
 import { 
-  LayoutDashboard, 
   Calendar, 
   Trophy, 
-  GitBranch, 
   Users, 
-  BarChart3, 
-  ShieldCheck 
+  Flame 
 } from 'lucide-react';
 
 export const App: React.FC = () => {
   const [tournaments, setTournaments] = useState<Tournament[]>(() => loadAllTournaments());
   const [activeTournamentId, setActiveId] = useState<string>(() => getActiveTournamentId());
   const [isAdmin, setIsAdmin] = useState<boolean>(true);
-  const [activeTab, setActiveTab] = useState<'overview' | 'fixture' | 'standings' | 'bracket' | 'teams' | 'stats'>('overview');
+  const [activeTab, setActiveTab] = useState<'standings' | 'fixture' | 'stats' | 'teams'>('standings');
 
   // Modals state
   const [editingMatch, setEditingMatch] = useState<Match | null>(null);
@@ -82,7 +77,7 @@ export const App: React.FC = () => {
     setTournaments((prev) => [newTournament, ...prev]);
     setActiveTournamentId(newTournament.id);
     setActiveId(newTournament.id);
-    setActiveTab('overview');
+    setActiveTab('standings');
   };
 
   const handleDeleteTournament = (id: string) => {
@@ -147,13 +142,10 @@ export const App: React.FC = () => {
     setEditingMatch(newMatch);
   };
 
-  const hasBracket = currentTournament?.format === 'knockout' || 
-    (currentTournament?.format === 'groups_playoffs' && currentTournament.matches.some((m) => m.stage && m.stage !== 'group'));
-
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-brand-500 selection:text-white">
       
-      {/* Sticky Navigation Header */}
+      {/* Encabezado compacto */}
       <Navbar
         tournament={currentTournament}
         isAdmin={isAdmin}
@@ -171,29 +163,29 @@ export const App: React.FC = () => {
         isCloudSynced={isCloudSynced}
       />
 
-      {/* Main Tab Bar for Desktop */}
-      <div className="bg-slate-900/60 border-b border-slate-800/80 sticky top-16 z-30 backdrop-blur-md hidden sm:block">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="flex space-x-2 py-2 overflow-x-auto no-scrollbar">
+      {/* Pestañas de navegación para PC y tablets */}
+      <div className="bg-slate-900 border-b border-slate-800 hidden sm:block">
+        <div className="max-w-4xl mx-auto px-4">
+          <nav className="flex space-x-2 py-2">
             
             <button
-              onClick={() => setActiveTab('overview')}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
-                activeTab === 'overview'
-                  ? 'bg-brand-600 text-white shadow-md shadow-brand-600/30'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+              onClick={() => setActiveTab('standings')}
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                activeTab === 'standings'
+                  ? 'bg-brand-600 text-white'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
               }`}
             >
-              <LayoutDashboard className="w-4 h-4" />
-              <span>Resumen</span>
+              <Trophy className="w-4 h-4" />
+              <span>Posiciones</span>
             </button>
 
             <button
               onClick={() => setActiveTab('fixture')}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
                 activeTab === 'fixture'
-                  ? 'bg-brand-600 text-white shadow-md shadow-brand-600/30'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                  ? 'bg-brand-600 text-white'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
               }`}
             >
               <Calendar className="w-4 h-4" />
@@ -201,68 +193,37 @@ export const App: React.FC = () => {
             </button>
 
             <button
-              onClick={() => setActiveTab('standings')}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
-                activeTab === 'standings'
-                  ? 'bg-brand-600 text-white shadow-md shadow-brand-600/30'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+              onClick={() => setActiveTab('stats')}
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                activeTab === 'stats'
+                  ? 'bg-brand-600 text-white'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
               }`}
             >
-              <Trophy className="w-4 h-4" />
-              <span>Tabla de Posiciones</span>
+              <Flame className="w-4 h-4" />
+              <span>Goleadores</span>
             </button>
-
-            {hasBracket && (
-              <button
-                onClick={() => setActiveTab('bracket')}
-                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
-                  activeTab === 'bracket'
-                    ? 'bg-brand-600 text-white shadow-md shadow-brand-600/30'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-                }`}
-              >
-                <GitBranch className="w-4 h-4" />
-                <span>Llaves Playoffs</span>
-              </button>
-            )}
 
             <button
               onClick={() => setActiveTab('teams')}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
                 activeTab === 'teams'
-                  ? 'bg-brand-600 text-white shadow-md shadow-brand-600/30'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                  ? 'bg-brand-600 text-white'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
               }`}
             >
               <Users className="w-4 h-4" />
-              <span>Equipos & Planteles</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('stats')}
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
-                activeTab === 'stats'
-                  ? 'bg-brand-600 text-white shadow-md shadow-brand-600/30'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-              }`}
-            >
-              <BarChart3 className="w-4 h-4" />
-              <span>Goleadores & Fair Play</span>
+              <span>Equipos</span>
             </button>
 
           </nav>
         </div>
       </div>
 
-      {/* Main Container Content */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-6 pb-24 sm:pb-12">
-        {activeTab === 'overview' && (
-          <DashboardOverview
-            tournament={currentTournament}
-            isAdmin={isAdmin}
-            onNavigate={(tab) => setActiveTab(tab)}
-            onEditMatch={(m) => setEditingMatch(m)}
-          />
+      {/* Contenido principal (Centrado y ancho ideal para leer y navegar en móvil o PC) */}
+      <main className="flex-1 max-w-4xl w-full mx-auto px-3 sm:px-4 py-4 pb-20 sm:pb-8">
+        {activeTab === 'standings' && (
+          <StandingsView tournament={currentTournament} />
         )}
 
         {activeTab === 'fixture' && (
@@ -275,16 +236,8 @@ export const App: React.FC = () => {
           />
         )}
 
-        {activeTab === 'standings' && (
-          <StandingsView tournament={currentTournament} />
-        )}
-
-        {activeTab === 'bracket' && (
-          <BracketView
-            tournament={currentTournament}
-            isAdmin={isAdmin}
-            onEditMatch={(m) => setEditingMatch(m)}
-          />
+        {activeTab === 'stats' && (
+          <StatsView tournament={currentTournament} />
         )}
 
         {activeTab === 'teams' && (
@@ -294,24 +247,20 @@ export const App: React.FC = () => {
             onUpdateTeams={handleUpdateTeams}
           />
         )}
-
-        {activeTab === 'stats' && (
-          <StatsView tournament={currentTournament} />
-        )}
       </main>
 
-      {/* Mobile Bottom Navigation Bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 sm:hidden px-2 py-1 shadow-2xl">
-        <div className="grid grid-cols-5 gap-1 text-[10px]">
+      {/* Barra inferior para Celulares (Fácil de pulsar con el pulgar) */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-slate-900 border-t border-slate-800 sm:hidden px-2 py-1 shadow-lg">
+        <div className="grid grid-cols-4 gap-1 text-[11px]">
           
           <button
-            onClick={() => setActiveTab('overview')}
+            onClick={() => setActiveTab('standings')}
             className={`flex flex-col items-center justify-center py-1.5 rounded-lg transition-colors ${
-              activeTab === 'overview' ? 'text-brand-400 font-bold' : 'text-slate-400'
+              activeTab === 'standings' ? 'text-brand-400 font-bold' : 'text-slate-400'
             }`}
           >
-            <LayoutDashboard className="w-4 h-4 mb-0.5" />
-            <span>Inicio</span>
+            <Trophy className="w-5 h-5 mb-0.5" />
+            <span>Posiciones</span>
           </button>
 
           <button
@@ -320,28 +269,8 @@ export const App: React.FC = () => {
               activeTab === 'fixture' ? 'text-brand-400 font-bold' : 'text-slate-400'
             }`}
           >
-            <Calendar className="w-4 h-4 mb-0.5" />
+            <Calendar className="w-5 h-5 mb-0.5" />
             <span>Fixture</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('standings')}
-            className={`flex flex-col items-center justify-center py-1.5 rounded-lg transition-colors ${
-              activeTab === 'standings' ? 'text-brand-400 font-bold' : 'text-slate-400'
-            }`}
-          >
-            <Trophy className="w-4 h-4 mb-0.5" />
-            <span>Posiciones</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('teams')}
-            className={`flex flex-col items-center justify-center py-1.5 rounded-lg transition-colors ${
-              activeTab === 'teams' ? 'text-brand-400 font-bold' : 'text-slate-400'
-            }`}
-          >
-            <Users className="w-4 h-4 mb-0.5" />
-            <span>Equipos</span>
           </button>
 
           <button
@@ -350,14 +279,24 @@ export const App: React.FC = () => {
               activeTab === 'stats' ? 'text-brand-400 font-bold' : 'text-slate-400'
             }`}
           >
-            <BarChart3 className="w-4 h-4 mb-0.5" />
-            <span>Stats</span>
+            <Flame className="w-5 h-5 mb-0.5" />
+            <span>Goles</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('teams')}
+            className={`flex flex-col items-center justify-center py-1.5 rounded-lg transition-colors ${
+              activeTab === 'teams' ? 'text-brand-400 font-bold' : 'text-slate-400'
+            }`}
+          >
+            <Users className="w-5 h-5 mb-0.5" />
+            <span>Equipos</span>
           </button>
 
         </div>
       </div>
 
-      {/* Modals */}
+      {/* Modales */}
       <MatchModal
         match={editingMatch}
         teams={currentTournament.teams}
