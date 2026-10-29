@@ -28,21 +28,25 @@ export function subscribeToAuth(callback: (user: User | null) => void): Unsubscr
   return onAuthStateChanged(auth, callback);
 }
 
+export type AdminRole = 'superadmin' | 'admin';
+
 /**
- * Un usuario es administrador si existe el documento admins/{uid}
- * (se crea a mano en la consola de Firebase). Las reglas de Firestore
- * son las que realmente protegen la escritura; esto solo decide
- * si se muestran los controles de edición.
+ * El rol sale del documento admins/{email en minúsculas}, que solo puede
+ * crear el superadmin (el primero se crea a mano en la consola de Firebase).
+ * Las reglas de Firestore son las que realmente protegen la escritura;
+ * esto solo decide qué controles se muestran.
  */
-export async function checkIsAdmin(user: User): Promise<boolean> {
+export async function getAdminRole(user: User): Promise<AdminRole | null> {
   const db = getFirebaseFirestore();
-  if (!db) return false;
+  const email = user.email?.toLowerCase();
+  if (!db || !email) return null;
   try {
-    const snap = await getDoc(doc(db, 'admins', user.uid));
-    return snap.exists();
+    const snap = await getDoc(doc(db, 'admins', email));
+    if (!snap.exists()) return null;
+    return snap.data().rol === 'superadmin' ? 'superadmin' : 'admin';
   } catch (err) {
     console.warn('No se pudo verificar el rol de administrador:', err);
-    return false;
+    return null;
   }
 }
 

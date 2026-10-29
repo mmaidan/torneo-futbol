@@ -5,7 +5,8 @@ import {
   Eye, 
   Cloud, 
   Layers, 
-  Plus
+  Plus,
+  UserCog
 } from 'lucide-react';
 import { Tournament } from '../types/tournament';
 
@@ -13,6 +14,8 @@ interface NavbarProps {
   tournament: Tournament;
   isAdmin: boolean;
   isLoggedIn?: boolean;
+  isSuperAdmin?: boolean;
+  onOpenAdmins?: () => void;
   onToggleAdmin: () => void;
   onOpenSelector: () => void;
   onOpenNewTournament: () => void;
@@ -25,6 +28,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   tournament,
   isAdmin,
   isLoggedIn = false,
+  isSuperAdmin = false,
+  onOpenAdmins,
   onToggleAdmin,
   onOpenSelector,
   onOpenNewTournament,
@@ -78,6 +83,17 @@ export const Navbar: React.FC<NavbarProps> = ({
                 title="Crear nuevo torneo"
               >
                 <Plus className="w-4 h-4" />
+              </button>
+            )}
+
+            {/* Gestión de usuarios (solo superadmin) */}
+            {isSuperAdmin && (
+              <button
+                onClick={onOpenAdmins}
+                className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700"
+                title="Administrar usuarios"
+              >
+                <UserCog className="w-4 h-4" />
               </button>
             )}
 

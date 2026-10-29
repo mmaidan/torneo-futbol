@@ -13,7 +13,7 @@ import {
   subscribeToAllTournamentsCloud,
   deleteTournamentFromCloud
 } from './services/firebase';
-import { subscribeToAuth, checkIsAdmin, logoutAdmin } from './services/auth';
+import { subscribeToAuth, getAdminRole, logoutAdmin, AdminRole } from './services/auth';
 import { Navbar } from './components/Navbar';
 import { FixtureView } from './components/FixtureView';
 import { StandingsView } from './components/StandingsView';
@@ -24,6 +24,7 @@ import { TournamentSelectorModal } from './components/TournamentSelectorModal';
 import { FirebaseConfigModal } from './components/FirebaseConfigModal';
 import { ShareModal } from './components/ShareModal';
 import { AdminLoginModal } from './components/AdminLoginModal';
+import { AdminsModal } from './components/AdminsModal';
 import { 
   Calendar, 
   Trophy, 
@@ -35,7 +36,9 @@ export const App: React.FC = () => {
   const [tournaments, setTournaments] = useState<Tournament[]>(() => loadAllTournaments());
   const [activeTournamentId, setActiveId] = useState<string>(() => getActiveTournamentId());
   const [authUser, setAuthUser] = useState<User | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [adminRole, setAdminRole] = useState<AdminRole | null>(null);
+  const isAdmin = adminRole !== null;
+  const isSuperAdmin = adminRole === 'superadmin';
   const [activeTab, setActiveTab] = useState<'standings' | 'fixture' | 'stats' | 'teams'>('standings');
 
   // Modals state
@@ -45,6 +48,7 @@ export const App: React.FC = () => {
   const [isFirebaseOpen, setIsFirebaseOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isAdminsOpen, setIsAdminsOpen] = useState(false);
   const [isCloudSynced, setIsCloudSynced] = useState<boolean>(() => !!getSavedFirebaseConfig());
 
   // Active tournament object
@@ -77,11 +81,11 @@ export const App: React.FC = () => {
     const unsub = subscribeToAuth((user) => {
       setAuthUser(user);
       if (!user) {
-        setIsAdmin(false);
+        setAdminRole(null);
         return;
       }
-      checkIsAdmin(user).then((ok) => {
-        if (!cancelled) setIsAdmin(ok);
+      getAdminRole(user).then((role) => {
+        if (!cancelled) setAdminRole(role);
       });
     });
     return () => {
@@ -185,6 +189,8 @@ export const App: React.FC = () => {
         tournament={currentTournament}
         isAdmin={isAdmin}
         isLoggedIn={!!authUser}
+        isSuperAdmin={isSuperAdmin}
+        onOpenAdmins={() => setIsAdminsOpen(true)}
         onToggleAdmin={handleAdminButton}
         onOpenSelector={() => {
           setIsNewTournamentOpen(false);
@@ -362,6 +368,12 @@ export const App: React.FC = () => {
       <AdminLoginModal
         isOpen={isLoginOpen}
         onClose={() => setIsLoginOpen(false)}
+      />
+
+      <AdminsModal
+        isOpen={isAdminsOpen && isSuperAdmin}
+        onClose={() => setIsAdminsOpen(false)}
+        currentEmail={authUser?.email || ''}
       />
 
       <ShareModal
