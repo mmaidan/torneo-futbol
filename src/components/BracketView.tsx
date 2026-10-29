@@ -1,6 +1,7 @@
 import React from 'react';
 import { Match, Team, Tournament } from '../types/tournament';
 import { Trophy, Award, Calendar, CheckCircle2 } from 'lucide-react';
+import { TeamBadge } from './TeamBadge';
 
 interface BracketViewProps {
   tournament: Tournament;
@@ -55,7 +56,7 @@ export const BracketView: React.FC<BracketViewProps> = ({
         {/* Home Team Row */}
         <div className={`px-3 py-2 flex items-center justify-between border-b border-slate-800/60 ${homeWon ? 'bg-brand-500/10 font-bold' : ''}`}>
           <div className="flex items-center gap-2 min-w-0">
-            <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: home.color }} />
+            <TeamBadge logoUrl={home.logoUrl} color={home.color} name={home.name} size={20} fallbackClassName="w-2.5 h-2.5 rounded-full" />
             <span className="text-xs text-white truncate max-w-[140px]">{home.name}</span>
           </div>
           <div className="flex items-center gap-1 font-mono text-sm">
@@ -75,7 +76,7 @@ export const BracketView: React.FC<BracketViewProps> = ({
         {/* Away Team Row */}
         <div className={`px-3 py-2 flex items-center justify-between ${awayWon ? 'bg-brand-500/10 font-bold' : ''}`}>
           <div className="flex items-center gap-2 min-w-0">
-            <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: away.color }} />
+            <TeamBadge logoUrl={away.logoUrl} color={away.color} name={away.name} size={20} fallbackClassName="w-2.5 h-2.5 rounded-full" />
             <span className="text-xs text-white truncate max-w-[140px]">{away.name}</span>
           </div>
           <div className="flex items-center gap-1 font-mono text-sm">

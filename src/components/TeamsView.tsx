@@ -13,6 +13,8 @@ import {
   X,
   Palette
 } from 'lucide-react';
+import { TeamBadge } from './TeamBadge';
+import { LogoUploader } from './LogoUploader';
 
 interface TeamsViewProps {
   tournament: Tournament;
@@ -46,6 +48,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
   const [teamName, setTeamName] = useState('');
   const [teamShortName, setTeamShortName] = useState('');
   const [teamColor, setTeamColor] = useState('#3b82f6');
+  const [teamLogo, setTeamLogo] = useState<string | undefined>(undefined);
   const [delegateName, setDelegateName] = useState('');
   const [delegatePhone, setDelegatePhone] = useState('');
 
@@ -59,6 +62,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
     setTeamName('');
     setTeamShortName('');
     setTeamColor(PRESET_COLORS[Math.floor(Math.random() * PRESET_COLORS.length)]);
+    setTeamLogo(undefined);
     setDelegateName('');
     setDelegatePhone('');
     setIsCreatingTeam(true);
@@ -69,6 +73,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
     setTeamName(team.name);
     setTeamShortName(team.shortName);
     setTeamColor(team.color);
+    setTeamLogo(team.logoUrl);
     setDelegateName(team.delegateName || '');
     setDelegatePhone(team.delegatePhone || '');
     setSelectedTeam(team);
@@ -89,6 +94,8 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
         delegatePhone: delegatePhone.trim(),
         players: [],
       };
+      // Firestore no admite valores undefined: solo se agrega la clave si hay imagen.
+      if (teamLogo) newTeam.logoUrl = teamLogo;
       const updated = [...tournament.teams, newTeam];
       onUpdateTeams(updated);
       setSelectedTeam(newTeam);
@@ -102,11 +109,23 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
         delegateName: delegateName.trim(),
         delegatePhone: delegatePhone.trim(),
       };
+      if (teamLogo) updatedTeam.logoUrl = teamLogo;
+      else delete updatedTeam.logoUrl;
       const updated = tournament.teams.map((t) => t.id === updatedTeam.id ? updatedTeam : t);
       onUpdateTeams(updated);
       setSelectedTeam(updatedTeam);
       setIsEditingTeam(false);
     }
+  };
+
+  // Cambia o quita el escudo del equipo seleccionado y guarda enseguida.
+  const handleLogoChange = (logoUrl: string | undefined) => {
+    if (!selectedTeam) return;
+    const updatedTeam: Team = { ...selectedTeam };
+    if (logoUrl) updatedTeam.logoUrl = logoUrl;
+    else delete updatedTeam.logoUrl;
+    onUpdateTeams(tournament.teams.map((t) => (t.id === updatedTeam.id ? updatedTeam : t)));
+    setSelectedTeam(updatedTeam);
   };
 
   const handleDeleteTeam = (teamId: string) => {
@@ -209,9 +228,12 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                   }`}
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <div 
-                      className="w-4 h-9 rounded-md flex-shrink-0 shadow-inner"
-                      style={{ backgroundColor: team.color || '#3b82f6' }}
+                    <TeamBadge
+                      logoUrl={team.logoUrl}
+                      color={team.color || '#3b82f6'}
+                      name={team.name}
+                      size={36}
+                      fallbackClassName="w-4 h-9 rounded-md flex-shrink-0 shadow-inner"
                     />
                     <div className="min-w-0">
                       <h4 className="text-sm font-bold text-white truncate">{team.name}</h4>
@@ -319,6 +341,9 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                 </div>
               </div>
 
+              {/* Escudo del equipo */}
+              <LogoUploader value={teamLogo} onChange={setTeamLogo} />
+
               {/* Color Picker */}
               <div>
                 <label className="block text-slate-400 mb-1.5 font-semibold text-xs">Color de Camiseta</label>
@@ -373,9 +398,12 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
               {/* Team Info Banner */}
               <div className="flex items-center justify-between border-b border-slate-800 pb-4">
                 <div className="flex items-center gap-3">
-                  <div 
-                    className="w-5 h-11 rounded-lg flex-shrink-0 shadow-md"
-                    style={{ backgroundColor: selectedTeam.color }}
+                  <TeamBadge
+                    logoUrl={selectedTeam.logoUrl}
+                    color={selectedTeam.color}
+                    name={selectedTeam.name}
+                    size={52}
+                    fallbackClassName="w-5 h-11 rounded-lg flex-shrink-0 shadow-md"
                   />
                   <div>
                     <h3 className="text-lg font-black text-white">{selectedTeam.name}</h3>
@@ -407,6 +435,13 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                   </button>
                 )}
               </div>
+
+              {/* Escudo del equipo (Admin): se guarda apenas se sube */}
+              {isAdmin && (
+                <div className="bg-slate-950/70 p-3.5 rounded-xl border border-slate-800">
+                  <LogoUploader value={selectedTeam.logoUrl} onChange={handleLogoChange} />
+                </div>
+              )}
 
               {/* Add player form (Admin) */}
               {isAdmin && (

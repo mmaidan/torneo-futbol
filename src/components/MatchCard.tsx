@@ -1,6 +1,7 @@
 import React from 'react';
 import { Match, Team } from '../types/tournament';
 import { Clock, MapPin, Edit3 } from 'lucide-react';
+import { TeamBadge } from './TeamBadge';
 
 interface MatchCardProps {
   match: Match;
@@ -76,9 +77,12 @@ export const MatchCard: React.FC<MatchCardProps> = ({
         
         {/* Local Team */}
         <div className="flex items-center gap-2 min-w-0">
-          <div 
-            className="w-3 h-6 rounded-sm flex-shrink-0"
-            style={{ backgroundColor: homeTeam.color || '#3b82f6' }}
+          <TeamBadge
+            logoUrl={homeTeam.logoUrl}
+            color={homeTeam.color || '#3b82f6'}
+            name={homeTeam.name}
+            size={28}
+            fallbackClassName="w-3 h-6 rounded-sm flex-shrink-0"
           />
           <span className="text-sm font-bold text-white truncate" title={homeTeam.name}>
             {homeTeam.name}
@@ -103,9 +107,12 @@ export const MatchCard: React.FC<MatchCardProps> = ({
           <span className="text-sm font-bold text-white truncate" title={awayTeam.name}>
             {awayTeam.name}
           </span>
-          <div 
-            className="w-3 h-6 rounded-sm flex-shrink-0"
-            style={{ backgroundColor: awayTeam.color || '#ef4444' }}
+          <TeamBadge
+            logoUrl={awayTeam.logoUrl}
+            color={awayTeam.color || '#ef4444'}
+            name={awayTeam.name}
+            size={28}
+            fallbackClassName="w-3 h-6 rounded-sm flex-shrink-0"
           />
         </div>
 

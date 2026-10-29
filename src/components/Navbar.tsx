@@ -9,6 +9,7 @@ import {
   UserCog
 } from 'lucide-react';
 import { Tournament } from '../types/tournament';
+import escudoChancay from '../assets/escudo-chancay.png';
 
 interface NavbarProps {
   tournament: Tournament;
@@ -47,9 +48,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="flex items-center gap-2 group text-left min-w-0"
             title="Cambiar torneo"
           >
-            <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-slate-950 font-black flex-shrink-0">
-              <Trophy className="w-4 h-4 text-white" />
-            </div>
+            <img
+              src={escudoChancay}
+              alt="Chancay F6"
+              className="w-9 h-9 object-contain flex-shrink-0"
+            />
             <div className="min-w-0">
               <h1 className="text-sm sm:text-base font-bold text-white truncate group-hover:text-brand-400 transition-colors">
                 {tournament.name}
