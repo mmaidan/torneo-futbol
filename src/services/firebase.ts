@@ -67,20 +67,31 @@ export function clearFirebaseConfig(): void {
 
 let firestoreInstance: Firestore | null = null;
 
-export function getFirebaseFirestore(): Firestore | null {
-  if (firestoreInstance) return firestoreInstance;
-
+export function getFirebaseApp(): FirebaseApp | null {
   const config = getSavedFirebaseConfig();
   if (!config || !config.apiKey || !config.projectId) {
     return null;
   }
 
   try {
-    const app: FirebaseApp = getApps().length === 0 ? initializeApp(config) : getApp();
+    return getApps().length === 0 ? initializeApp(config) : getApp();
+  } catch (err) {
+    console.error('Failed to initialize Firebase app:', err);
+    return null;
+  }
+}
+
+export function getFirebaseFirestore(): Firestore | null {
+  if (firestoreInstance) return firestoreInstance;
+
+  const app = getFirebaseApp();
+  if (!app) return null;
+
+  try {
     firestoreInstance = getFirestore(app);
     return firestoreInstance;
   } catch (err) {
-    console.error('Failed to initialize Firebase app:', err);
+    console.error('Failed to initialize Firestore:', err);
     return null;
   }
 }

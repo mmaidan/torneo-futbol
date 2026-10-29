@@ -1,12 +1,44 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Reglas para la colección de torneos
+
+    // Los administradores se identifican por el email de su cuenta de Google.
+    // Cada uno tiene un documento admins/{email en minúsculas} con el campo
+    // rol: "admin" o "superadmin". Solo el superadmin crea y borra esos
+    // documentos desde la app. El primero se crea a mano en la consola.
+    function email() {
+      return request.auth.token.email.lower();
+    }
+
+    function adminPath() {
+      return /databases/$(database)/documents/admins/$(email());
+    }
+
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && exists(adminPath());
+    }
+
+    function isSuperAdmin() {
+      return isAdmin() && get(adminPath()).data.rol == 'superadmin';
+    }
+
+    match /admins/{adminEmail} {
+      // Cada admin lee su propio documento; el superadmin lee la lista completa.
+      allow read: if isSuperAdmin()
+        || (isAdmin() && adminEmail == email());
+      // Solo el superadmin da de alta o de baja, y no puede borrarse a sí mismo
+      // (para no quedarse sin superusuario).
+      allow create, update: if isSuperAdmin();
+      allow delete: if isSuperAdmin() && adminEmail != email();
+    }
+
     match /tournaments/{tournamentId} {
-      // Permitir lectura a todos (para que los jugadores vean fixture y tabla)
+      // Cualquiera puede ver fixture, tabla y estadísticas.
       allow read: if true;
-      // Permitir escritura para actualizar resultados y equipos
-      allow write: if true;
+      // Solo administradores pueden crear, editar o borrar.
+      allow write: if isAdmin();
     }
   }
 }

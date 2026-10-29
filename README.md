@@ -61,3 +61,24 @@ npm run build
 ## 📱 Diseñado para Celulares y Tablets
 
 El sistema cuenta con una barra de navegación inferior adaptada a dispositivos móviles, lo que permite que planilleros y árbitros puedan actualizar los resultados directamente desde el campo de juego.
+
+---
+
+## 🔐 Acceso de administrador (Google + Firebase)
+
+Cualquiera puede **ver** fixture, tabla y estadísticas. Solo los administradores pueden **editar** (crear torneos, cargar resultados, equipos, borrar). El botón "Ingresar" de la barra superior abre el login con Google.
+
+Hay dos roles, y se identifican por el **email de la cuenta de Google**:
+
+- **Admin**: edita torneos.
+- **Superadmin**: además tiene un botón de "Administrar usuarios" para dar de alta y de baja a otros admins (y superadmins). No puede darse de baja a sí mismo.
+
+Cualquier otra cuenta de Google puede entrar, pero queda en modo lectura ("Sin permiso").
+
+Configuración única en la consola de Firebase:
+
+1. **Authentication → Sign-in method → Google**: habilitar (te pide un email de soporte del proyecto).
+2. **Authentication → Settings → Authorized domains**: agregar el dominio del sitio (el de Vercel y/o `tu-usuario.github.io`).
+3. **Firestore Database → Data → Start collection**: colección `admins`; **ID del documento = tu email de Google en minúsculas**; campo `rol` (string) = `superadmin`. Es el único alta manual: los demás se hacen desde la app.
+4. **Firestore Database → Rules**: pegar el contenido de `firestore.rules` y publicar.
+5. Entrar al sitio con esa cuenta de Google: aparece el botón "Admin" y el de "Administrar usuarios".

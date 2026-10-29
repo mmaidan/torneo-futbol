@@ -25,6 +25,7 @@ interface TournamentSelectorModalProps {
   onDeleteTournament: (id: string) => void;
   onImportTournament: (tournament: Tournament) => void;
   initiallyOpenCreate?: boolean;
+  isAdmin?: boolean;
 }
 
 const PRESET_COLORS = [
@@ -43,10 +44,11 @@ export const TournamentSelectorModal: React.FC<TournamentSelectorModalProps> = (
   onDeleteTournament,
   onImportTournament,
   initiallyOpenCreate = false,
+  isAdmin = false,
 }) => {
   if (!isOpen) return null;
 
-  const [isCreating, setIsCreating] = useState(initiallyOpenCreate);
+  const [isCreating, setIsCreating] = useState(initiallyOpenCreate && isAdmin);
 
   // New Tournament form state
   const [name, setName] = useState('');
@@ -292,6 +294,7 @@ export const TournamentSelectorModal: React.FC<TournamentSelectorModalProps> = (
             <div className="space-y-3">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs text-slate-400 font-semibold">Torneos Disponibles:</span>
+                {isAdmin && (
                 <button
                   onClick={() => setIsCreating(true)}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-brand-600 hover:bg-brand-500 text-white transition-colors"
@@ -299,6 +302,7 @@ export const TournamentSelectorModal: React.FC<TournamentSelectorModalProps> = (
                   <Plus className="w-3.5 h-3.5" />
                   <span>Crear Nuevo</span>
                 </button>
+                )}
               </div>
 
               <div className="space-y-2 max-h-72 overflow-y-auto">
@@ -347,7 +351,7 @@ export const TournamentSelectorModal: React.FC<TournamentSelectorModalProps> = (
                         >
                           <Download className="w-3.5 h-3.5" />
                         </button>
-                        {tournaments.length > 1 && (
+                        {isAdmin && tournaments.length > 1 && (
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -367,7 +371,8 @@ export const TournamentSelectorModal: React.FC<TournamentSelectorModalProps> = (
                 })}
               </div>
 
-              {/* Import JSON button */}
+              {/* Import JSON button (solo admin) */}
+              {isAdmin && (
               <div className="pt-3 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
                 <span>¿Tienes una copia de respaldo guardada?</span>
                 <label className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 cursor-pointer">
@@ -381,6 +386,7 @@ export const TournamentSelectorModal: React.FC<TournamentSelectorModalProps> = (
                   />
                 </label>
               </div>
+              )}
             </div>
           )}
 
