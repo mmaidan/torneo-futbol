@@ -36,6 +36,7 @@ export const MatchModal: React.FC<MatchModalProps> = ({
     name: 'Equipo Local',
     shortName: 'LOC',
     color: '#3b82f6',
+    logoUrl: undefined as string | undefined,
     players: [],
   };
 
@@ -44,6 +45,7 @@ export const MatchModal: React.FC<MatchModalProps> = ({
     name: 'Equipo Visitante',
     shortName: 'VIS',
     color: '#ef4444',
+    logoUrl: undefined as string | undefined,
     players: [],
   };
 

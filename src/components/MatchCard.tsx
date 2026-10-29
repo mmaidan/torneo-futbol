@@ -20,6 +20,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
     name: 'Local',
     shortName: 'LOC',
     color: '#3b82f6',
+    logoUrl: undefined as string | undefined,
     players: [],
   };
 
@@ -27,6 +28,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
     name: 'Visitante',
     shortName: 'VIS',
     color: '#ef4444',
+    logoUrl: undefined as string | undefined,
     players: [],
   };
 

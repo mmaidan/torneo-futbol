@@ -28,6 +28,7 @@ export const BracketView: React.FC<BracketViewProps> = ({
       name: teamId === 'BYE' ? 'Libre' : teamId ? 'Por definir' : 'TBD',
       shortName: 'TBD',
       color: '#475569',
+      logoUrl: undefined as string | undefined,
       players: []
     };
   };
