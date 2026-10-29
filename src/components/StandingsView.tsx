@@ -2,6 +2,7 @@ import React from 'react';
 import { Tournament, StandingRow } from '../types/tournament';
 import { calculateStandings } from '../utils/standingsCalculator';
 import { Share2, Trophy } from 'lucide-react';
+import { TeamBadge } from './TeamBadge';
 import { generateWhatsAppStandingsText } from '../utils/exportUtils';
 
 interface StandingsViewProps {
@@ -83,9 +84,12 @@ export const StandingsView: React.FC<StandingsViewProps> = ({ tournament }) => {
                     {/* Equipo */}
                     <td className="py-2.5 px-2 font-semibold text-white">
                       <div className="flex items-center gap-2">
-                        <div 
-                          className="w-2.5 h-4 sm:w-3 sm:h-5 rounded-xs flex-shrink-0"
-                          style={{ backgroundColor: row.teamColor || '#3b82f6' }}
+                        <TeamBadge
+                          logoUrl={tournament.teams.find((t) => t.id === row.teamId)?.logoUrl}
+                          color={row.teamColor || '#3b82f6'}
+                          name={row.teamName}
+                          size={24}
+                          fallbackClassName="w-2.5 h-4 sm:w-3 sm:h-5 rounded-xs flex-shrink-0"
                         />
                         <span className="truncate max-w-[130px] sm:max-w-none text-xs sm:text-sm">
                           {row.teamName}

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Match, Team, MatchEvent, EventType } from '../types/tournament';
+import { TeamBadge } from './TeamBadge';
 import { 
   X, 
   Save, 
@@ -35,6 +36,7 @@ export const MatchModal: React.FC<MatchModalProps> = ({
     name: 'Equipo Local',
     shortName: 'LOC',
     color: '#3b82f6',
+    logoUrl: undefined as string | undefined,
     players: [],
   };
 
@@ -43,6 +45,7 @@ export const MatchModal: React.FC<MatchModalProps> = ({
     name: 'Equipo Visitante',
     shortName: 'VIS',
     color: '#ef4444',
+    logoUrl: undefined as string | undefined,
     players: [],
   };
 
@@ -225,10 +228,7 @@ export const MatchModal: React.FC<MatchModalProps> = ({
               {/* Home Team Score Control */}
               <div className="flex flex-col items-center p-3 rounded-xl bg-slate-900/80 border border-slate-800">
                 <div className="flex items-center gap-2 mb-2">
-                  <div 
-                    className="w-3.5 h-3.5 rounded-full"
-                    style={{ backgroundColor: homeTeam.color }}
-                  />
+                  <TeamBadge logoUrl={homeTeam.logoUrl} color={homeTeam.color} name={homeTeam.name} size={28} fallbackClassName="w-3.5 h-3.5 rounded-full" />
                   <span className="font-bold text-sm sm:text-base text-white text-center truncate max-w-[140px]">
                     {homeTeam.name}
                   </span>
@@ -259,10 +259,7 @@ export const MatchModal: React.FC<MatchModalProps> = ({
               {/* Away Team Score Control */}
               <div className="flex flex-col items-center p-3 rounded-xl bg-slate-900/80 border border-slate-800">
                 <div className="flex items-center gap-2 mb-2">
-                  <div 
-                    className="w-3.5 h-3.5 rounded-full"
-                    style={{ backgroundColor: awayTeam.color }}
-                  />
+                  <TeamBadge logoUrl={awayTeam.logoUrl} color={awayTeam.color} name={awayTeam.name} size={28} fallbackClassName="w-3.5 h-3.5 rounded-full" />
                   <span className="font-bold text-sm sm:text-base text-white text-center truncate max-w-[140px]">
                     {awayTeam.name}
                   </span>

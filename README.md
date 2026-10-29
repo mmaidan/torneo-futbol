@@ -13,6 +13,7 @@ Una aplicación web moderna, rápida y responsiva diseñada para administrar tor
 
 2. **Equipos y Planteles**:
    - Registro de equipos con paleta de colores de camiseta y abreviaturas.
+   - **Escudo por equipo**: el administrador sube la imagen de cada equipo (se reduce y se guarda dentro del torneo) y aparece en posiciones, fixture, llaves y planilla.
    - Datos de delegado/contacto con enlace directo.
    - Plantilla de jugadores: Dorsal, posición (Arquero, Defensor, Medio, Delantero), capitán y tarjetas acumuladas.
 
