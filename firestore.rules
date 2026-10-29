@@ -2,10 +2,11 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Los administradores se identifican por el email de su cuenta de Google.
-    // Cada uno tiene un documento admins/{email en minúsculas} con el campo
-    // rol: "admin" o "superadmin". Solo el superadmin crea y borra esos
-    // documentos desde la app. El primero se crea a mano en la consola.
+    // Los administradores tienen un documento admins/{email en minúsculas}
+    // (su email de Google, o usuario@torneo.local si entran con usuario y
+    // contraseña) con el campo rol: "admin" o "superadmin". Solo el superadmin
+    // crea y borra esos documentos desde la app. El primero (con tu cuenta de
+    // Google) se crea a mano en la consola.
     function email() {
       return request.auth.token.email.lower();
     }
@@ -14,10 +15,18 @@ service cloud.firestore {
       return /databases/$(database)/documents/admins/$(email());
     }
 
-    function isAdmin() {
+    // Identidad confiable: cuenta de Google (email verificado) o usuario creado
+    // por la app, que usa el formato usuario@torneo.local. Un email sin verificar
+    // de otro dominio NO sirve, para que nadie se registre con el correo de un admin.
+    function trustedIdentity() {
       return request.auth != null
-        && request.auth.token.email_verified == true
-        && exists(adminPath());
+        && (request.auth.token.email_verified == true
+            || (request.auth.token.firebase.sign_in_provider == 'password'
+                && request.auth.token.email.matches('.*@torneo[.]local')));
+    }
+
+    function isAdmin() {
+      return trustedIdentity() && exists(adminPath());
     }
 
     function isSuperAdmin() {
