@@ -13,7 +13,7 @@ import {
   subscribeToAllTournamentsCloud,
   deleteTournamentFromCloud
 } from './services/firebase';
-import { subscribeToAuth, getAdminRole, logoutAdmin, AdminRole } from './services/auth';
+import { subscribeToAuth, checkAdminRole, describeRoleCheck, logoutAdmin, AdminRole, RoleCheck } from './services/auth';
 import { Navbar } from './components/Navbar';
 import { FixtureView } from './components/FixtureView';
 import { StandingsView } from './components/StandingsView';
@@ -37,6 +37,7 @@ export const App: React.FC = () => {
   const [activeTournamentId, setActiveId] = useState<string>(() => getActiveTournamentId());
   const [authUser, setAuthUser] = useState<User | null>(null);
   const [adminRole, setAdminRole] = useState<AdminRole | null>(null);
+  const [roleCheck, setRoleCheck] = useState<RoleCheck | null>(null);
   const isAdmin = adminRole !== null;
   const isSuperAdmin = adminRole === 'superadmin';
   const [activeTab, setActiveTab] = useState<'standings' | 'fixture' | 'stats' | 'teams'>('standings');
@@ -82,10 +83,13 @@ export const App: React.FC = () => {
       setAuthUser(user);
       if (!user) {
         setAdminRole(null);
+        setRoleCheck(null);
         return;
       }
-      getAdminRole(user).then((role) => {
-        if (!cancelled) setAdminRole(role);
+      checkAdminRole(user).then((res) => {
+        if (cancelled) return;
+        setAdminRole(res.role);
+        setRoleCheck(res);
       });
     });
     return () => {
@@ -204,6 +208,12 @@ export const App: React.FC = () => {
         onOpenShareModal={() => setIsShareOpen(true)}
         isCloudSynced={isCloudSynced}
       />
+
+      {authUser && roleCheck && !roleCheck.role && (
+        <div className="bg-rose-950/70 border-b border-rose-900 text-rose-200 text-xs px-4 py-2 text-center">
+          {describeRoleCheck(roleCheck)}
+        </div>
+      )}
 
       {/* Pestañas de navegación para PC y tablets */}
       <div className="bg-slate-900 border-b border-slate-800 hidden sm:block">

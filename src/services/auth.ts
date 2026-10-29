@@ -60,17 +60,46 @@ export function isPasswordUserEmail(email: string): boolean {
  * Las reglas de Firestore son las que realmente protegen la escritura;
  * esto solo decide qué controles se muestran.
  */
-export async function getAdminRole(user: User): Promise<AdminRole | null> {
+export interface RoleCheck {
+  role: AdminRole | null;
+  email: string;
+  reason?: 'no-db' | 'no-email' | 'not-found' | 'denied' | 'error';
+  detail?: string;
+}
+
+export async function checkAdminRole(user: User): Promise<RoleCheck> {
   const db = getFirebaseFirestore();
-  const email = user.email?.toLowerCase();
-  if (!db || !email) return null;
+  const email = user.email?.toLowerCase() || '';
+  if (!email) return { role: null, email, reason: 'no-email' };
+  if (!db) return { role: null, email, reason: 'no-db' };
   try {
     const snap = await getDoc(doc(db, 'admins', email));
-    if (!snap.exists()) return null;
-    return snap.data().rol === 'superadmin' ? 'superadmin' : 'admin';
+    if (!snap.exists()) return { role: null, email, reason: 'not-found' };
+    return { role: snap.data().rol === 'superadmin' ? 'superadmin' : 'admin', email };
   } catch (err) {
+    const code = (err as { code?: string })?.code || '';
     console.warn('No se pudo verificar el rol de administrador:', err);
-    return null;
+    return {
+      role: null,
+      email,
+      reason: code.includes('permission-denied') ? 'denied' : 'error',
+      detail: code || (err as Error)?.message,
+    };
+  }
+}
+
+export function describeRoleCheck(c: RoleCheck): string {
+  switch (c.reason) {
+    case 'not-found':
+      return `Entraste como ${c.email}, pero no existe el documento admins/${c.email} en Firestore.`;
+    case 'denied':
+      return `Entraste como ${c.email}, pero Firebase rechazó la lectura de "admins". Revisá que las reglas estén publicadas y que el documento admins/${c.email} exista.`;
+    case 'no-email':
+      return 'Tu cuenta no tiene email, no se puede verificar el acceso.';
+    case 'no-db':
+      return 'Firebase no está configurado en este navegador.';
+    default:
+      return `Entraste como ${c.email}, pero falló la verificación (${c.detail || 'error desconocido'}).`;
   }
 }
 
