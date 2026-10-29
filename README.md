@@ -64,16 +64,17 @@ El sistema cuenta con una barra de navegación inferior adaptada a dispositivos 
 
 ---
 
-## 🔐 Acceso de administrador (Firebase Auth)
+## 🔐 Acceso de administrador (Google + Firebase)
 
-Cualquiera puede **ver** fixture, tabla y estadísticas. Solo el administrador puede **editar** (crear torneos, cargar resultados, equipos, borrar). El botón "Ingresar" de la barra superior abre el login con email y contraseña.
+Cualquiera puede **ver** fixture, tabla y estadísticas. Solo el administrador puede **editar** (crear torneos, cargar resultados, equipos, borrar). El botón "Ingresar" de la barra superior abre el login con Google.
+
+Quién es administrador lo deciden las reglas de Firestore: solo escribe quien tenga un documento en `admins/{uid}`. Cualquier otra cuenta de Google puede entrar, pero queda en modo lectura ("Sin permiso").
 
 Configuración única en la consola de Firebase:
 
-1. **Authentication → Sign-in method**: habilitar *Correo electrónico/contraseña*.
-2. **Authentication → Users → Add user**: crear el usuario administrador (email + contraseña) y copiar su **UID**.
-3. **Authentication → Settings → User actions**: desmarcar *Enable create (sign-up)* para que nadie más pueda registrarse.
-4. **Firestore Database → Data**: crear la colección `admins` con un documento cuyo **ID sea el UID** del paso 2 (puede tener cualquier campo, por ejemplo `rol: "admin"`).
+1. **Authentication → Sign-in method → Google**: habilitar (te pide un email de soporte del proyecto).
+2. **Authentication → Settings → Authorized domains**: agregar el dominio del sitio (el de Vercel y/o `tu-usuario.github.io`).
+3. Entrar una vez al sitio con tu cuenta de Google (quedás en "Sin permiso"). Después, en **Authentication → Users**, copiar tu **UID**.
+4. **Firestore Database → Data**: crear la colección `admins` con un documento cuyo **ID sea ese UID** (con un campo `rol: "admin"`).
 5. **Firestore Database → Rules**: pegar el contenido de `firestore.rules` y publicar.
-
-Las reglas permiten leer a todos y escribir solo a quien tenga su documento en `admins/{uid}`.
+6. Recargar el sitio: el botón pasa a "Admin".

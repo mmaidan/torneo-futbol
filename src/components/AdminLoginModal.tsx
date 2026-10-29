@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { X, ShieldCheck, Mail, Lock, Loader2 } from 'lucide-react';
-import { loginAdmin, authErrorMessage } from '../services/auth';
+import { X, ShieldCheck, Loader2 } from 'lucide-react';
+import { loginWithGoogle, authErrorMessage } from '../services/auth';
 
 interface AdminLoginModalProps {
   isOpen: boolean;
@@ -8,24 +8,16 @@ interface AdminLoginModalProps {
 }
 
 export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ isOpen, onClose }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   if (!isOpen) return null;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email.trim() || !password) {
-      setError('Completá el email y la contraseña.');
-      return;
-    }
+  const handleGoogle = async () => {
     setLoading(true);
     setError('');
     try {
-      await loginAdmin(email, password);
-      setPassword('');
+      await loginWithGoogle();
       onClose();
     } catch (err) {
       setError(authErrorMessage(err));
@@ -55,35 +47,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ isOpen, onClos
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-5 space-y-3 text-xs">
-          <div>
-            <label className="block text-slate-400 mb-1 font-semibold">Email</label>
-            <div className="relative">
-              <Mail className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
-              <input
-                type="email"
-                autoComplete="username"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg pl-9 pr-3 py-2 text-white"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-slate-400 mb-1 font-semibold">Contraseña</label>
-            <div className="relative">
-              <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
-              <input
-                type="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg pl-9 pr-3 py-2 text-white"
-              />
-            </div>
-          </div>
-
+        <div className="p-5 space-y-3 text-xs">
           {error && (
             <p className="text-rose-400 bg-rose-950/40 border border-rose-900 rounded-lg px-3 py-2">
               {error}
@@ -91,14 +55,15 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ isOpen, onClos
           )}
 
           <button
-            type="submit"
+            type="button"
+            onClick={handleGoogle}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-brand-600 hover:bg-brand-500 disabled:opacity-60 text-white"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-white hover:bg-slate-100 disabled:opacity-60 text-slate-900"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
-            <span>{loading ? 'Ingresando...' : 'Ingresar'}</span>
+            <span>{loading ? 'Abriendo Google...' : 'Ingresar con Google'}</span>
           </button>
-        </form>
+        </div>
       </div>
     </div>
   );

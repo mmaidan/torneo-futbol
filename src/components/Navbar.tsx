@@ -12,6 +12,7 @@ import { Tournament } from '../types/tournament';
 interface NavbarProps {
   tournament: Tournament;
   isAdmin: boolean;
+  isLoggedIn?: boolean;
   onToggleAdmin: () => void;
   onOpenSelector: () => void;
   onOpenNewTournament: () => void;
@@ -23,6 +24,7 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({
   tournament,
   isAdmin,
+  isLoggedIn = false,
   onToggleAdmin,
   onOpenSelector,
   onOpenNewTournament,
@@ -87,7 +89,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   ? 'bg-amber-500/10 text-amber-300 border-amber-500/30' 
                   : 'bg-slate-800 text-slate-400 border-slate-700'
               }`}
-              title={isAdmin ? 'Administrador: tocá para cerrar sesión' : 'Modo lectura: tocá para ingresar como admin'}
+              title={isAdmin ? 'Administrador: tocá para cerrar sesión' : isLoggedIn ? 'Esta cuenta no es administradora: tocá para cerrar sesión' : 'Modo lectura: tocá para ingresar como admin'}
             >
               {isAdmin ? (
                 <>
@@ -97,7 +99,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               ) : (
                 <>
                   <Eye className="w-3.5 h-3.5" />
-                  <span className="text-[11px]">Ingresar</span>
+                  <span className="text-[11px]">{isLoggedIn ? 'Sin permiso' : 'Ingresar'}</span>
                 </>
               )}
             </button>

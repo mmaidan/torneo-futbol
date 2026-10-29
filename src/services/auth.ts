@@ -1,12 +1,14 @@
 import {
   getAuth,
-  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
   signOut,
   onAuthStateChanged,
   User,
   Unsubscribe,
 } from 'firebase/auth';
-import { getFirebaseApp } from './firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import { getFirebaseApp, getFirebaseFirestore } from './firebase';
 
 function getFirebaseAuth() {
   const app = getFirebaseApp();
@@ -26,12 +28,32 @@ export function subscribeToAuth(callback: (user: User | null) => void): Unsubscr
   return onAuthStateChanged(auth, callback);
 }
 
-export async function loginAdmin(email: string, password: string): Promise<void> {
+/**
+ * Un usuario es administrador si existe el documento admins/{uid}
+ * (se crea a mano en la consola de Firebase). Las reglas de Firestore
+ * son las que realmente protegen la escritura; esto solo decide
+ * si se muestran los controles de edición.
+ */
+export async function checkIsAdmin(user: User): Promise<boolean> {
+  const db = getFirebaseFirestore();
+  if (!db) return false;
+  try {
+    const snap = await getDoc(doc(db, 'admins', user.uid));
+    return snap.exists();
+  } catch (err) {
+    console.warn('No se pudo verificar el rol de administrador:', err);
+    return false;
+  }
+}
+
+export async function loginWithGoogle(): Promise<void> {
   const auth = getFirebaseAuth();
   if (!auth) {
     throw new Error('Firebase no está configurado.');
   }
-  await signInWithEmailAndPassword(auth, email.trim(), password);
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+  await signInWithPopup(auth, provider);
 }
 
 export async function logoutAdmin(): Promise<void> {
@@ -44,17 +66,17 @@ export async function logoutAdmin(): Promise<void> {
 export function authErrorMessage(err: unknown): string {
   const code = (err as { code?: string })?.code || '';
   switch (code) {
-    case 'auth/invalid-credential':
-    case 'auth/wrong-password':
-    case 'auth/user-not-found':
-    case 'auth/invalid-email':
-      return 'Email o contraseña incorrectos.';
-    case 'auth/too-many-requests':
-      return 'Demasiados intentos. Esperá unos minutos y probá de nuevo.';
+    case 'auth/popup-closed-by-user':
+    case 'auth/cancelled-popup-request':
+      return 'Cerraste la ventana de Google antes de terminar.';
+    case 'auth/popup-blocked':
+      return 'El navegador bloqueó la ventana emergente. Permitila e intentá de nuevo.';
+    case 'auth/unauthorized-domain':
+      return 'Este sitio no está autorizado en Firebase (Authentication → Settings → Authorized domains).';
+    case 'auth/operation-not-allowed':
+      return 'El acceso con Google no está habilitado en Firebase.';
     case 'auth/network-request-failed':
       return 'No hay conexión. Revisá tu internet.';
-    case 'auth/operation-not-allowed':
-      return 'El acceso con email y contraseña no está habilitado en Firebase.';
     default:
       return (err as Error)?.message || 'No se pudo iniciar sesión.';
   }

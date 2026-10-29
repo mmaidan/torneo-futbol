@@ -13,7 +13,7 @@ import {
   subscribeToAllTournamentsCloud,
   deleteTournamentFromCloud
 } from './services/firebase';
-import { subscribeToAuth, logoutAdmin } from './services/auth';
+import { subscribeToAuth, checkIsAdmin, logoutAdmin } from './services/auth';
 import { Navbar } from './components/Navbar';
 import { FixtureView } from './components/FixtureView';
 import { StandingsView } from './components/StandingsView';
@@ -34,8 +34,8 @@ import {
 export const App: React.FC = () => {
   const [tournaments, setTournaments] = useState<Tournament[]>(() => loadAllTournaments());
   const [activeTournamentId, setActiveId] = useState<string>(() => getActiveTournamentId());
-  const [adminUser, setAdminUser] = useState<User | null>(null);
-  const isAdmin = !!adminUser;
+  const [authUser, setAuthUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [activeTab, setActiveTab] = useState<'standings' | 'fixture' | 'stats' | 'teams'>('standings');
 
   // Modals state
@@ -73,12 +73,25 @@ export const App: React.FC = () => {
 
   // Sesión de administrador (Firebase Auth)
   useEffect(() => {
-    const unsub = subscribeToAuth((user) => setAdminUser(user));
-    return () => unsub();
+    let cancelled = false;
+    const unsub = subscribeToAuth((user) => {
+      setAuthUser(user);
+      if (!user) {
+        setIsAdmin(false);
+        return;
+      }
+      checkIsAdmin(user).then((ok) => {
+        if (!cancelled) setIsAdmin(ok);
+      });
+    });
+    return () => {
+      cancelled = true;
+      unsub();
+    };
   }, []);
 
   const handleAdminButton = () => {
-    if (isAdmin) {
+    if (authUser) {
       logoutAdmin().catch(console.error);
     } else {
       setIsLoginOpen(true);
@@ -171,6 +184,7 @@ export const App: React.FC = () => {
       <Navbar
         tournament={currentTournament}
         isAdmin={isAdmin}
+        isLoggedIn={!!authUser}
         onToggleAdmin={handleAdminButton}
         onOpenSelector={() => {
           setIsNewTournamentOpen(false);
