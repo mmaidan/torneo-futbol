@@ -1,12 +1,25 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Reglas para la colección de torneos
+
+    // Un usuario es administrador si existe el documento admins/{su uid}.
+    // Ese documento se crea a mano desde la consola de Firebase
+    // (las apps no pueden crearlo ni modificarlo).
+    function isAdmin() {
+      return request.auth != null &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    match /admins/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+
     match /tournaments/{tournamentId} {
-      // Permitir lectura a todos (para que los jugadores vean fixture y tabla)
+      // Cualquiera puede ver fixture, tabla y estadísticas.
       allow read: if true;
-      // Permitir escritura para actualizar resultados y equipos
-      allow write: if true;
+      // Solo el administrador puede crear, editar o borrar.
+      allow write: if isAdmin();
     }
   }
 }

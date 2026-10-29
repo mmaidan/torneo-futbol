@@ -68,14 +68,16 @@ export const Navbar: React.FC<NavbarProps> = ({
               <Cloud className="w-4 h-4" />
             </button>
 
-            {/* Nuevo Torneo */}
-            <button
-              onClick={onOpenNewTournament}
-              className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700"
-              title="Crear nuevo torneo"
-            >
-              <Plus className="w-4 h-4" />
-            </button>
+            {/* Nuevo Torneo (solo admin) */}
+            {isAdmin && (
+              <button
+                onClick={onOpenNewTournament}
+                className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700"
+                title="Crear nuevo torneo"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            )}
 
             {/* Admin Toggle */}
             <button
@@ -85,7 +87,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   ? 'bg-amber-500/10 text-amber-300 border-amber-500/30' 
                   : 'bg-slate-800 text-slate-400 border-slate-700'
               }`}
-              title={isAdmin ? 'Modo Administrador activado' : 'Modo Lectura (Público)'}
+              title={isAdmin ? 'Administrador: tocá para cerrar sesión' : 'Modo lectura: tocá para ingresar como admin'}
             >
               {isAdmin ? (
                 <>
@@ -95,7 +97,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               ) : (
                 <>
                   <Eye className="w-3.5 h-3.5" />
-                  <span className="text-[11px]">Lector</span>
+                  <span className="text-[11px]">Ingresar</span>
                 </>
               )}
             </button>

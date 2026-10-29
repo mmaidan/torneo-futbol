@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { User } from 'firebase/auth';
 import { Tournament, Match, Team } from './types/tournament';
 import { 
   loadAllTournaments, 
@@ -12,6 +13,7 @@ import {
   subscribeToAllTournamentsCloud,
   deleteTournamentFromCloud
 } from './services/firebase';
+import { subscribeToAuth, logoutAdmin } from './services/auth';
 import { Navbar } from './components/Navbar';
 import { FixtureView } from './components/FixtureView';
 import { StandingsView } from './components/StandingsView';
@@ -21,6 +23,7 @@ import { MatchModal } from './components/MatchModal';
 import { TournamentSelectorModal } from './components/TournamentSelectorModal';
 import { FirebaseConfigModal } from './components/FirebaseConfigModal';
 import { ShareModal } from './components/ShareModal';
+import { AdminLoginModal } from './components/AdminLoginModal';
 import { 
   Calendar, 
   Trophy, 
@@ -31,7 +34,8 @@ import {
 export const App: React.FC = () => {
   const [tournaments, setTournaments] = useState<Tournament[]>(() => loadAllTournaments());
   const [activeTournamentId, setActiveId] = useState<string>(() => getActiveTournamentId());
-  const [isAdmin, setIsAdmin] = useState<boolean>(true);
+  const [adminUser, setAdminUser] = useState<User | null>(null);
+  const isAdmin = !!adminUser;
   const [activeTab, setActiveTab] = useState<'standings' | 'fixture' | 'stats' | 'teams'>('standings');
 
   // Modals state
@@ -40,6 +44,7 @@ export const App: React.FC = () => {
   const [isNewTournamentOpen, setIsNewTournamentOpen] = useState(false);
   const [isFirebaseOpen, setIsFirebaseOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isCloudSynced, setIsCloudSynced] = useState<boolean>(() => !!getSavedFirebaseConfig());
 
   // Active tournament object
@@ -66,13 +71,29 @@ export const App: React.FC = () => {
     }
   }, []);
 
+  // Sesión de administrador (Firebase Auth)
+  useEffect(() => {
+    const unsub = subscribeToAuth((user) => setAdminUser(user));
+    return () => unsub();
+  }, []);
+
+  const handleAdminButton = () => {
+    if (isAdmin) {
+      logoutAdmin().catch(console.error);
+    } else {
+      setIsLoginOpen(true);
+    }
+  };
+
   // Handlers for modifying tournament
   const handleUpdateTournament = (updated: Tournament) => {
+    if (!isAdmin) return;
     saveTournament(updated);
     setTournaments((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
   };
 
   const handleCreateTournament = (newTournament: Tournament) => {
+    if (!isAdmin) return;
     saveTournament(newTournament);
     setTournaments((prev) => [newTournament, ...prev]);
     setActiveTournamentId(newTournament.id);
@@ -81,6 +102,7 @@ export const App: React.FC = () => {
   };
 
   const handleDeleteTournament = (id: string) => {
+    if (!isAdmin) return;
     deleteTournamentFromCloud(id).catch(console.error);
     const updated = deleteTournament(id);
     setTournaments(updated);
@@ -149,7 +171,7 @@ export const App: React.FC = () => {
       <Navbar
         tournament={currentTournament}
         isAdmin={isAdmin}
-        onToggleAdmin={() => setIsAdmin(!isAdmin)}
+        onToggleAdmin={handleAdminButton}
         onOpenSelector={() => {
           setIsNewTournamentOpen(false);
           setIsSelectorOpen(true);
@@ -314,12 +336,18 @@ export const App: React.FC = () => {
         onDeleteTournament={handleDeleteTournament}
         onImportTournament={handleCreateTournament}
         initiallyOpenCreate={isNewTournamentOpen}
+        isAdmin={isAdmin}
       />
 
       <FirebaseConfigModal
         isOpen={isFirebaseOpen}
         onClose={() => setIsFirebaseOpen(false)}
         onConfigSaved={() => setIsCloudSynced(!!getSavedFirebaseConfig())}
+      />
+
+      <AdminLoginModal
+        isOpen={isLoginOpen}
+        onClose={() => setIsLoginOpen(false)}
       />
 
       <ShareModal

@@ -61,3 +61,19 @@ npm run build
 ## 📱 Diseñado para Celulares y Tablets
 
 El sistema cuenta con una barra de navegación inferior adaptada a dispositivos móviles, lo que permite que planilleros y árbitros puedan actualizar los resultados directamente desde el campo de juego.
+
+---
+
+## 🔐 Acceso de administrador (Firebase Auth)
+
+Cualquiera puede **ver** fixture, tabla y estadísticas. Solo el administrador puede **editar** (crear torneos, cargar resultados, equipos, borrar). El botón "Ingresar" de la barra superior abre el login con email y contraseña.
+
+Configuración única en la consola de Firebase:
+
+1. **Authentication → Sign-in method**: habilitar *Correo electrónico/contraseña*.
+2. **Authentication → Users → Add user**: crear el usuario administrador (email + contraseña) y copiar su **UID**.
+3. **Authentication → Settings → User actions**: desmarcar *Enable create (sign-up)* para que nadie más pueda registrarse.
+4. **Firestore Database → Data**: crear la colección `admins` con un documento cuyo **ID sea el UID** del paso 2 (puede tener cualquier campo, por ejemplo `rol: "admin"`).
+5. **Firestore Database → Rules**: pegar el contenido de `firestore.rules` y publicar.
+
+Las reglas permiten leer a todos y escribir solo a quien tenga su documento en `admins/{uid}`.
