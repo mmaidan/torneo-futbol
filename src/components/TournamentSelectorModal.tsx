@@ -122,7 +122,7 @@ export const TournamentSelectorModal: React.FC<TournamentSelectorModalProps> = (
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       config: {
-        pointsForWin: 3,
+        pointsForWin: 2,
         pointsForDraw: 1,
         pointsForLoss: 0,
         matchDurationMinutes: matchDuration,

@@ -110,7 +110,7 @@ export const initialMockTournament: Tournament = {
   createdAt: '2026-10-28T10:00:00Z',
   updatedAt: new Date().toISOString(),
   config: {
-    pointsForWin: 3,
+    pointsForWin: 2,
     pointsForDraw: 1,
     pointsForLoss: 0,
     matchDurationMinutes: 40, // 2 tiempos de 20 min para F6

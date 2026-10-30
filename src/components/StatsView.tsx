@@ -93,7 +93,6 @@ export const StatsView: React.FC<StatsViewProps> = ({ tournament }) => {
                 <th className="py-2.5 px-3">Equipo</th>
                 <th className="py-2.5 px-3 text-center text-yellow-400">🟨</th>
                 <th className="py-2.5 px-3 text-center text-rose-400">🟥</th>
-                <th className="py-2.5 px-3 text-center">Pts Sanción</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/80">
@@ -113,7 +112,6 @@ export const StatsView: React.FC<StatsViewProps> = ({ tournament }) => {
                   </td>
                   <td className="py-2.5 px-3 text-center font-mono text-yellow-300 font-bold">{stat.yellowCards}</td>
                   <td className="py-2.5 px-3 text-center font-mono text-rose-400 font-bold">{stat.redCards}</td>
-                  <td className="py-2.5 px-3 text-center font-mono text-slate-300 font-bold">{stat.pointsDeducted}</td>
                 </tr>
               ))}
             </tbody>
