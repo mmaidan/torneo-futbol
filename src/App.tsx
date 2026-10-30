@@ -225,7 +225,7 @@ export const App: React.FC = () => {
               className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
                 activeTab === 'standings'
                   ? 'bg-brand-600 text-white'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  : 'text-slate-400 hover:text-ink hover:bg-slate-800'
               }`}
             >
               <Trophy className="w-4 h-4" />
@@ -237,7 +237,7 @@ export const App: React.FC = () => {
               className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
                 activeTab === 'fixture'
                   ? 'bg-brand-600 text-white'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  : 'text-slate-400 hover:text-ink hover:bg-slate-800'
               }`}
             >
               <Calendar className="w-4 h-4" />
@@ -249,7 +249,7 @@ export const App: React.FC = () => {
               className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
                 activeTab === 'stats'
                   ? 'bg-brand-600 text-white'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  : 'text-slate-400 hover:text-ink hover:bg-slate-800'
               }`}
             >
               <Flame className="w-4 h-4" />
@@ -261,7 +261,7 @@ export const App: React.FC = () => {
               className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
                 activeTab === 'teams'
                   ? 'bg-brand-600 text-white'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  : 'text-slate-400 hover:text-ink hover:bg-slate-800'
               }`}
             >
               <Users className="w-4 h-4" />

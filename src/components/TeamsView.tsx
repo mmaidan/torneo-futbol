@@ -182,7 +182,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
       <div className="flex items-center justify-between bg-slate-900 border border-slate-800 rounded-2xl p-4">
         <div className="flex items-center gap-2">
           <Users className="w-5 h-5 text-brand-400" />
-          <h2 className="text-sm font-bold text-white uppercase tracking-wider">
+          <h2 className="text-sm font-bold text-ink uppercase tracking-wider">
             Gestión de Equipos y Planteles
           </h2>
           <span className="text-xs bg-slate-800 text-slate-400 px-2.5 py-0.5 rounded-full">
@@ -236,7 +236,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                       fallbackClassName="w-4 h-9 rounded-md flex-shrink-0 shadow-inner"
                     />
                     <div className="min-w-0">
-                      <h4 className="text-sm font-bold text-white truncate">{team.name}</h4>
+                      <h4 className="text-sm font-bold text-ink truncate">{team.name}</h4>
                       <p className="text-xs text-slate-400 font-mono">
                         {team.shortName} • {team.players.length}/18 jugadores
                       </p>
@@ -250,7 +250,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                           e.stopPropagation();
                           openEditTeam(team);
                         }}
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700"
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-ink hover:bg-slate-700"
                         title="Editar equipo"
                       >
                         <Edit className="w-3.5 h-3.5" />
@@ -280,7 +280,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
           {(isCreatingTeam || isEditingTeam) && (
             <div className="bg-slate-900 border border-brand-500/50 rounded-2xl p-5 space-y-4 shadow-xl">
               <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                <h3 className="text-sm font-bold text-white">
+                <h3 className="text-sm font-bold text-ink">
                   {isCreatingTeam ? 'Registrar Nuevo Equipo' : `Editar: ${selectedTeam?.name}`}
                 </h3>
                 <button
@@ -288,7 +288,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                     setIsCreatingTeam(false);
                     setIsEditingTeam(false);
                   }}
-                  className="text-slate-400 hover:text-white"
+                  className="text-slate-400 hover:text-ink"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -302,7 +302,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                     placeholder="Ej. Los Guerreros FC"
                     value={teamName}
                     onChange={(e) => setTeamName(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white"
+                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-ink"
                   />
                 </div>
 
@@ -314,7 +314,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                     placeholder="GUE"
                     value={teamShortName}
                     onChange={(e) => setTeamShortName(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono uppercase"
+                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-ink font-mono uppercase"
                   />
                 </div>
 
@@ -325,7 +325,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                     placeholder="Juan Pérez"
                     value={delegateName}
                     onChange={(e) => setDelegateName(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white"
+                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-ink"
                   />
                 </div>
 
@@ -336,7 +336,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                     placeholder="+54 9 11 ..."
                     value={delegatePhone}
                     onChange={(e) => setDelegatePhone(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white"
+                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-ink"
                   />
                 </div>
               </div>
@@ -406,7 +406,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                     fallbackClassName="w-5 h-11 rounded-lg flex-shrink-0 shadow-md"
                   />
                   <div>
-                    <h3 className="text-lg font-black text-white">{selectedTeam.name}</h3>
+                    <h3 className="text-lg font-black text-ink">{selectedTeam.name}</h3>
                     <p className="text-xs text-brand-400 font-semibold">
                       Plantel: {selectedTeam.players.length} / 18 jugadores • Fútbol 6
                     </p>
@@ -458,7 +458,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                         placeholder="Nombre completo"
                         value={newPlayerName}
                         onChange={(e) => setNewPlayerName(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white"
+                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-ink"
                       />
                     </div>
                     <div>
@@ -467,14 +467,14 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                         placeholder="Dorsal #"
                         value={newPlayerNumber}
                         onChange={(e) => setNewPlayerNumber(e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white font-mono"
+                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-ink font-mono"
                       />
                     </div>
                     <div>
                       <select
                         value={newPlayerPosition}
                         onChange={(e) => setNewPlayerPosition(e.target.value as Player['position'])}
-                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white"
+                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-ink"
                       >
                         <option value="GK">Arquero (GK)</option>
                         <option value="DEF">Defensor (DEF)</option>
@@ -520,7 +520,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                             <td className="py-2.5 px-3 text-center font-mono font-bold text-brand-400">
                               {p.number || '-'}
                             </td>
-                            <td className="py-2.5 px-3 font-semibold text-white">
+                            <td className="py-2.5 px-3 font-semibold text-ink">
                               {p.name}
                             </td>
                             <td className="py-2.5 px-3">

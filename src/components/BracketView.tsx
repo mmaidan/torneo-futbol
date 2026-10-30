@@ -58,7 +58,7 @@ export const BracketView: React.FC<BracketViewProps> = ({
         <div className={`px-3 py-2 flex items-center justify-between border-b border-slate-800/60 ${homeWon ? 'bg-brand-500/10 font-bold' : ''}`}>
           <div className="flex items-center gap-2 min-w-0">
             <TeamBadge logoUrl={home.logoUrl} color={home.color} name={home.name} size={20} fallbackClassName="w-2.5 h-2.5 rounded-full" />
-            <span className="text-xs text-white truncate max-w-[140px]">{home.name}</span>
+            <span className="text-xs text-ink truncate max-w-[140px]">{home.name}</span>
           </div>
           <div className="flex items-center gap-1 font-mono text-sm">
             {isFinished ? (
@@ -78,7 +78,7 @@ export const BracketView: React.FC<BracketViewProps> = ({
         <div className={`px-3 py-2 flex items-center justify-between ${awayWon ? 'bg-brand-500/10 font-bold' : ''}`}>
           <div className="flex items-center gap-2 min-w-0">
             <TeamBadge logoUrl={away.logoUrl} color={away.color} name={away.name} size={20} fallbackClassName="w-2.5 h-2.5 rounded-full" />
-            <span className="text-xs text-white truncate max-w-[140px]">{away.name}</span>
+            <span className="text-xs text-ink truncate max-w-[140px]">{away.name}</span>
           </div>
           <div className="flex items-center gap-1 font-mono text-sm">
             {isFinished ? (
@@ -103,7 +103,7 @@ export const BracketView: React.FC<BracketViewProps> = ({
     return (
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-10 text-center">
         <Trophy className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-        <h3 className="text-base font-bold text-white mb-1">
+        <h3 className="text-base font-bold text-ink mb-1">
           No hay llaves de eliminación configuradas
         </h3>
         <p className="text-xs text-slate-400 max-w-md mx-auto">
@@ -118,7 +118,7 @@ export const BracketView: React.FC<BracketViewProps> = ({
       <div className="flex items-center justify-between bg-slate-900 p-4 rounded-2xl border border-slate-800">
         <div className="flex items-center gap-2">
           <Trophy className="w-5 h-5 text-amber-400" />
-          <h2 className="text-sm font-bold text-white uppercase tracking-wider">
+          <h2 className="text-sm font-bold text-ink uppercase tracking-wider">
             Cuadro de Eliminación Directa / Playoffs
           </h2>
         </div>

@@ -11,6 +11,7 @@ import {
 import { Tournament } from '../types/tournament';
 import escudoChancay from '../assets/escudo-chancay.png';
 import { InstallAppButton } from './InstallAppButton';
+import { ThemeToggle } from './ThemeToggle';
 
 interface NavbarProps {
   tournament: Tournament;
@@ -40,6 +41,8 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   return (
     <header className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 shadow-sm">
+      {/* Franja con los colores del escudo de Chancay F6 */}
+      <div className="h-1 bg-gradient-to-r from-club-blue from-55% to-club-red" />
       <div className="max-w-4xl mx-auto px-3 sm:px-4">
         <div className="flex items-center justify-between h-14 gap-2">
           
@@ -55,7 +58,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="w-9 h-9 object-contain flex-shrink-0"
             />
             <div className="min-w-0">
-              <h1 className="text-sm sm:text-base font-bold text-white truncate group-hover:text-brand-400 transition-colors">
+              <h1 className="text-sm sm:text-base font-bold text-ink truncate group-hover:text-brand-400 transition-colors">
                 {tournament.name}
               </h1>
               <p className="text-[11px] text-slate-400 flex items-center gap-1">
@@ -67,6 +70,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Right actions: Cloud Sync, Admin toggle, New */}
           <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
             <InstallAppButton />
+
+            <ThemeToggle />
 
             {/* Cloud Status (solo admin: el público no necesita ver la configuración) */}
             {isAdmin && (

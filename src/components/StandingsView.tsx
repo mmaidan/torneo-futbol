@@ -29,7 +29,7 @@ export const StandingsView: React.FC<StandingsViewProps> = ({ tournament }) => {
       <div className="flex items-center justify-between bg-slate-900 border border-slate-800 p-3 rounded-xl">
         <div className="flex items-center gap-2">
           <Trophy className="w-4 h-4 text-brand-400" />
-          <h2 className="text-sm font-bold text-white uppercase tracking-wider">
+          <h2 className="text-sm font-bold text-ink uppercase tracking-wider">
             Posiciones
           </h2>
         </div>
@@ -56,7 +56,7 @@ export const StandingsView: React.FC<StandingsViewProps> = ({ tournament }) => {
               <th className="py-2.5 px-2 text-center hidden sm:table-cell" title="Empatados">PE</th>
               <th className="py-2.5 px-2 text-center hidden sm:table-cell" title="Perdidos">PP</th>
               <th className="py-2.5 px-2 text-center" title="Diferencia de Gol">DG</th>
-              <th className="py-2.5 px-3 text-center font-bold text-white w-12" title="Puntos">PTS</th>
+              <th className="py-2.5 px-3 text-center font-bold text-ink w-12" title="Puntos">PTS</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800/80">
@@ -82,7 +82,7 @@ export const StandingsView: React.FC<StandingsViewProps> = ({ tournament }) => {
                     </td>
 
                     {/* Equipo */}
-                    <td className="py-2.5 px-2 font-semibold text-white">
+                    <td className="py-2.5 px-2 font-semibold text-ink">
                       <div className="flex items-center gap-2">
                         <TeamBadge
                           logoUrl={tournament.teams.find((t) => t.id === row.teamId)?.logoUrl}

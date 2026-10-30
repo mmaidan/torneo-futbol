@@ -86,7 +86,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
             size={28}
             fallbackClassName="w-3 h-6 rounded-sm flex-shrink-0"
           />
-          <span className="text-sm font-bold text-white truncate" title={homeTeam.name}>
+          <span className="text-sm font-bold text-ink truncate" title={homeTeam.name}>
             {homeTeam.name}
           </span>
         </div>
@@ -94,7 +94,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
         {/* Score or VS */}
         <div className="px-2 text-center">
           {isFinished ? (
-            <div className="bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800 font-mono font-black text-lg text-white">
+            <div className="bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800 font-mono font-black text-lg text-ink">
               {match.homeScore ?? 0} - {match.awayScore ?? 0}
             </div>
           ) : (
@@ -106,7 +106,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
 
         {/* Away Team */}
         <div className="flex items-center justify-end gap-2 min-w-0 text-right">
-          <span className="text-sm font-bold text-white truncate" title={awayTeam.name}>
+          <span className="text-sm font-bold text-ink truncate" title={awayTeam.name}>
             {awayTeam.name}
           </span>
           <TeamBadge

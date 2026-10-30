@@ -45,7 +45,7 @@ export const StatsView: React.FC<StatsViewProps> = ({ tournament }) => {
                 <th className="py-2.5 px-3 text-center w-8">#</th>
                 <th className="py-2.5 px-3">Jugador</th>
                 <th className="py-2.5 px-3">Equipo</th>
-                <th className="py-2.5 px-3 text-center font-bold text-white w-14">Goles</th>
+                <th className="py-2.5 px-3 text-center font-bold text-ink w-14">Goles</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/80">
@@ -61,7 +61,7 @@ export const StatsView: React.FC<StatsViewProps> = ({ tournament }) => {
                     <td className="py-2.5 px-3 text-center font-bold font-mono">
                       {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : idx + 1}
                     </td>
-                    <td className="py-2.5 px-3 font-bold text-white truncate max-w-[140px]">
+                    <td className="py-2.5 px-3 font-bold text-ink truncate max-w-[140px]">
                       {scorer.playerName}
                     </td>
                     <td className="py-2.5 px-3 text-slate-300">
@@ -102,7 +102,7 @@ export const StatsView: React.FC<StatsViewProps> = ({ tournament }) => {
                   <td className="py-2.5 px-3 text-center font-mono font-bold text-slate-400">
                     {idx + 1}
                   </td>
-                  <td className="py-2.5 px-3 font-semibold text-white">
+                  <td className="py-2.5 px-3 font-semibold text-ink">
                     <div className="flex items-center gap-1.5">
                       <div
                         className="w-2.5 h-2.5 rounded-full"

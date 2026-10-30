@@ -38,7 +38,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ isOpen, onClos
     run(() => loginWithPassword(usuario, password));
   };
 
-  const inputClass = 'w-full bg-slate-950 border border-slate-700 rounded-lg pl-9 pr-3 py-2 text-white';
+  const inputClass = 'w-full bg-slate-950 border border-slate-700 rounded-lg pl-9 pr-3 py-2 text-ink';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/80 backdrop-blur-sm">
@@ -49,13 +49,13 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ isOpen, onClos
               <ShieldCheck className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white">Acceso de administrador</h2>
+              <h2 className="text-base font-bold text-ink">Acceso de administrador</h2>
               <p className="text-xs text-slate-400">Solo el admin puede editar el torneo</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-ink hover:bg-slate-800 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -110,7 +110,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ isOpen, onClos
             type="button"
             onClick={() => run(loginWithGoogle)}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-white hover:bg-slate-100 disabled:opacity-60 text-slate-900"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-white hover:bg-slate-100 disabled:opacity-60 text-club-ink"
           >
             <span>Ingresar con Google</span>
           </button>

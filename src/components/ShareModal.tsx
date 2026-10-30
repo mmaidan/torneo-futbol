@@ -60,7 +60,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
               <Share2 className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white">
+              <h2 className="text-base font-bold text-ink">
                 Compartir & Exportar Torneo
               </h2>
               <p className="text-xs text-slate-400">
@@ -70,7 +70,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-ink hover:bg-slate-800 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -83,7 +83,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
             className={`flex items-center gap-1.5 pb-2.5 px-2 border-b-2 font-bold transition-colors ${
               activeTab === 'whatsapp'
                 ? 'border-brand-500 text-brand-400'
-                : 'border-transparent text-slate-400 hover:text-white'
+                : 'border-transparent text-slate-400 hover:text-ink'
             }`}
           >
             <Share2 className="w-3.5 h-3.5" />
@@ -95,7 +95,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
             className={`flex items-center gap-1.5 pb-2.5 px-2 border-b-2 font-bold transition-colors ${
               activeTab === 'referee_sheet'
                 ? 'border-brand-500 text-brand-400'
-                : 'border-transparent text-slate-400 hover:text-white'
+                : 'border-transparent text-slate-400 hover:text-ink'
             }`}
           >
             <FileText className="w-3.5 h-3.5" />
@@ -138,7 +138,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                     <select
                       value={selectedRound}
                       onChange={(e) => setSelectedRound(Number(e.target.value))}
-                      className="bg-slate-900 border border-slate-700 rounded-md px-2 py-1 text-white font-mono"
+                      className="bg-slate-900 border border-slate-700 rounded-md px-2 py-1 text-ink font-mono"
                     >
                       {allRounds.map((r) => (
                         <option key={r} value={r}>Fecha {r}</option>
@@ -197,7 +197,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
               </div>
 
               {/* Printable sheet preview container */}
-              <div className="bg-white text-slate-900 p-6 rounded-xl shadow-lg border border-slate-300 font-sans text-xs space-y-4">
+              <div className="paper bg-white text-slate-900 p-6 rounded-xl shadow-lg border border-slate-300 font-sans text-xs space-y-4">
                 
                 {/* Header */}
                 <div className="border-b-2 border-slate-900 pb-3 flex items-center justify-between">

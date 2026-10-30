@@ -112,7 +112,7 @@ export const AdminsModal: React.FC<AdminsModalProps> = ({ isOpen, onClose, curre
     }
   };
 
-  const inputClass = 'w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white';
+  const inputClass = 'w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-ink';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/80 backdrop-blur-sm overflow-y-auto">
@@ -123,13 +123,13 @@ export const AdminsModal: React.FC<AdminsModalProps> = ({ isOpen, onClose, curre
               <UserCog className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white">Administradores</h2>
+              <h2 className="text-base font-bold text-ink">Administradores</h2>
               <p className="text-xs text-slate-400">Altas y bajas de usuarios</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-ink hover:bg-slate-800 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -203,7 +203,7 @@ export const AdminsModal: React.FC<AdminsModalProps> = ({ isOpen, onClose, curre
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-ink"
                       title={showPassword ? 'Ocultar' : 'Mostrar'}
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -254,7 +254,7 @@ export const AdminsModal: React.FC<AdminsModalProps> = ({ isOpen, onClose, curre
                   className="flex items-center justify-between gap-2 bg-slate-800/60 border border-slate-700 rounded-xl px-3 py-2"
                 >
                   <div className="min-w-0">
-                    <p className="text-white font-semibold truncate">{a.nombre || entryLabel(a)}</p>
+                    <p className="text-ink font-semibold truncate">{a.nombre || entryLabel(a)}</p>
                     <p className="text-[11px] text-slate-400 flex items-center gap-1 truncate">
                       {a.rol === 'superadmin' && <Crown className="w-3 h-3 text-amber-400 flex-shrink-0" />}
                       <span className="truncate">
