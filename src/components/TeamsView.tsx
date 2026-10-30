@@ -494,63 +494,69 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                 </div>
               )}
 
-              {/* Players Table */}
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
-                  <thead>
-                    <tr className="bg-slate-950 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
-                      <th className="py-2.5 px-3 text-center w-12">#</th>
-                      <th className="py-2.5 px-3">Nombre</th>
-                      <th className="py-2.5 px-3">Posición</th>
-                      <th className="py-2.5 px-3 text-center">Capitán</th>
-                      {isAdmin && <th className="py-2.5 px-3 text-right">Acción</th>}
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-800/60">
-                    {selectedTeam.players.length === 0 ? (
-                      <tr>
-                        <td colSpan={5} className="py-6 text-center text-slate-500 text-xs">
-                          No hay jugadores cargados en este plantel aún.
-                        </td>
+              {/* Plantilla de jugadores: solo la ve el administrador */}
+              {isAdmin ? (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead>
+                      <tr className="bg-slate-950 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
+                        <th className="py-2.5 px-3 text-center w-12">#</th>
+                        <th className="py-2.5 px-3">Nombre</th>
+                        <th className="py-2.5 px-3">Posición</th>
+                        <th className="py-2.5 px-3 text-center">Capitán</th>
+                        {isAdmin && <th className="py-2.5 px-3 text-right">Acción</th>}
                       </tr>
-                    ) : (
-                      selectedTeam.players.map((p) => (
-                        <tr key={p.id} className="hover:bg-slate-800/40">
-                          <td className="py-2.5 px-3 text-center font-mono font-bold text-brand-400">
-                            {p.number || '-'}
+                    </thead>
+                    <tbody className="divide-y divide-slate-800/60">
+                      {selectedTeam.players.length === 0 ? (
+                        <tr>
+                          <td colSpan={5} className="py-6 text-center text-slate-500 text-xs">
+                            No hay jugadores cargados en este plantel aún.
                           </td>
-                          <td className="py-2.5 px-3 font-semibold text-white">
-                            {p.name}
-                          </td>
-                          <td className="py-2.5 px-3">
-                            <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-800 text-slate-300">
-                              {p.position || 'JUG'}
-                            </span>
-                          </td>
-                          <td className="py-2.5 px-3 text-center">
-                            {p.isCaptain && (
-                              <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold border border-amber-500/30">
-                                (C)
-                              </span>
-                            )}
-                          </td>
-                          {isAdmin && (
-                            <td className="py-2.5 px-3 text-right">
-                              <button
-                                onClick={() => handleDeletePlayer(p.id)}
-                                className="text-slate-500 hover:text-rose-400 p-1"
-                                title="Eliminar jugador"
-                              >
-                                <Trash2 className="w-3.5 h-3.5" />
-                              </button>
-                            </td>
-                          )}
                         </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
+                      ) : (
+                        selectedTeam.players.map((p) => (
+                          <tr key={p.id} className="hover:bg-slate-800/40">
+                            <td className="py-2.5 px-3 text-center font-mono font-bold text-brand-400">
+                              {p.number || '-'}
+                            </td>
+                            <td className="py-2.5 px-3 font-semibold text-white">
+                              {p.name}
+                            </td>
+                            <td className="py-2.5 px-3">
+                              <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-800 text-slate-300">
+                                {p.position || 'JUG'}
+                              </span>
+                            </td>
+                            <td className="py-2.5 px-3 text-center">
+                              {p.isCaptain && (
+                                <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold border border-amber-500/30">
+                                  (C)
+                                </span>
+                              )}
+                            </td>
+                            {isAdmin && (
+                              <td className="py-2.5 px-3 text-right">
+                                <button
+                                  onClick={() => handleDeletePlayer(p.id)}
+                                  className="text-slate-500 hover:text-rose-400 p-1"
+                                  title="Eliminar jugador"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </td>
+                            )}
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <p className="text-center text-xs text-slate-500 py-4">
+                  La plantilla de jugadores solo la ve el administrador.
+                </p>
+              )}
 
             </div>
           )}
