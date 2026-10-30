@@ -155,7 +155,7 @@ export const MatchModal: React.FC<MatchModalProps> = ({
               <Trophy className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white">
+              <h2 className="text-base font-bold text-ink">
                 Planilla de Partido & Resultados
               </h2>
               <p className="text-xs text-slate-400">
@@ -165,7 +165,7 @@ export const MatchModal: React.FC<MatchModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-ink hover:bg-slate-800 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -181,7 +181,7 @@ export const MatchModal: React.FC<MatchModalProps> = ({
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as Match['status'])}
-                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-brand-500"
+                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-ink focus:outline-none focus:ring-1 focus:ring-brand-500"
               >
                 <option value="scheduled">Programado</option>
                 <option value="finished">Finalizado</option>
@@ -195,7 +195,7 @@ export const MatchModal: React.FC<MatchModalProps> = ({
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-brand-500"
+                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-ink focus:outline-none focus:ring-1 focus:ring-brand-500"
               />
             </div>
 
@@ -205,7 +205,7 @@ export const MatchModal: React.FC<MatchModalProps> = ({
                 type="time"
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-brand-500"
+                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-ink focus:outline-none focus:ring-1 focus:ring-brand-500"
               />
             </div>
 
@@ -216,7 +216,7 @@ export const MatchModal: React.FC<MatchModalProps> = ({
                 placeholder="Cancha 1"
                 value={pitch}
                 onChange={(e) => setPitch(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-brand-500"
+                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-ink focus:outline-none focus:ring-1 focus:ring-brand-500"
               />
             </div>
           </div>
@@ -229,7 +229,7 @@ export const MatchModal: React.FC<MatchModalProps> = ({
               <div className="flex flex-col items-center p-3 rounded-xl bg-slate-900/80 border border-slate-800">
                 <div className="flex items-center gap-2 mb-2">
                   <TeamBadge logoUrl={homeTeam.logoUrl} color={homeTeam.color} name={homeTeam.name} size={28} fallbackClassName="w-3.5 h-3.5 rounded-full" />
-                  <span className="font-bold text-sm sm:text-base text-white text-center truncate max-w-[140px]">
+                  <span className="font-bold text-sm sm:text-base text-ink text-center truncate max-w-[140px]">
                     {homeTeam.name}
                   </span>
                 </div>
@@ -238,11 +238,11 @@ export const MatchModal: React.FC<MatchModalProps> = ({
                   <button
                     type="button"
                     onClick={() => setHomeScore((s) => Math.max(0, s - 1))}
-                    className="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center font-bold text-lg active:scale-95 transition-transform"
+                    className="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 text-ink flex items-center justify-center font-bold text-lg active:scale-95 transition-transform"
                   >
                     <Minus className="w-5 h-5" />
                   </button>
-                  <span className="text-4xl sm:text-5xl font-mono font-black text-white w-14 text-center">
+                  <span className="text-4xl sm:text-5xl font-mono font-black text-ink w-14 text-center">
                     {homeScore}
                   </span>
                   <button
@@ -260,7 +260,7 @@ export const MatchModal: React.FC<MatchModalProps> = ({
               <div className="flex flex-col items-center p-3 rounded-xl bg-slate-900/80 border border-slate-800">
                 <div className="flex items-center gap-2 mb-2">
                   <TeamBadge logoUrl={awayTeam.logoUrl} color={awayTeam.color} name={awayTeam.name} size={28} fallbackClassName="w-3.5 h-3.5 rounded-full" />
-                  <span className="font-bold text-sm sm:text-base text-white text-center truncate max-w-[140px]">
+                  <span className="font-bold text-sm sm:text-base text-ink text-center truncate max-w-[140px]">
                     {awayTeam.name}
                   </span>
                 </div>
@@ -269,11 +269,11 @@ export const MatchModal: React.FC<MatchModalProps> = ({
                   <button
                     type="button"
                     onClick={() => setAwayScore((s) => Math.max(0, s - 1))}
-                    className="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center font-bold text-lg active:scale-95 transition-transform"
+                    className="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 text-ink flex items-center justify-center font-bold text-lg active:scale-95 transition-transform"
                   >
                     <Minus className="w-5 h-5" />
                   </button>
-                  <span className="text-4xl sm:text-5xl font-mono font-black text-white w-14 text-center">
+                  <span className="text-4xl sm:text-5xl font-mono font-black text-ink w-14 text-center">
                     {awayScore}
                   </span>
                   <button
@@ -298,7 +298,7 @@ export const MatchModal: React.FC<MatchModalProps> = ({
                   placeholder="Pen. Loc"
                   value={homePenalties}
                   onChange={(e) => setHomePenalties(e.target.value)}
-                  className="w-16 bg-slate-800 border border-slate-700 rounded px-2 py-1 text-center font-mono text-white text-xs"
+                  className="w-16 bg-slate-800 border border-slate-700 rounded px-2 py-1 text-center font-mono text-ink text-xs"
                 />
                 <span className="text-slate-500">-</span>
                 <input
@@ -306,7 +306,7 @@ export const MatchModal: React.FC<MatchModalProps> = ({
                   placeholder="Pen. Vis"
                   value={awayPenalties}
                   onChange={(e) => setAwayPenalties(e.target.value)}
-                  className="w-16 bg-slate-800 border border-slate-700 rounded px-2 py-1 text-center font-mono text-white text-xs"
+                  className="w-16 bg-slate-800 border border-slate-700 rounded px-2 py-1 text-center font-mono text-ink text-xs"
                 />
               </div>
             </div>
@@ -328,7 +328,7 @@ export const MatchModal: React.FC<MatchModalProps> = ({
                     setSelectedTeamId(e.target.value);
                     setSelectedPlayerId('');
                   }}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white"
+                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-ink"
                 >
                   <option value={homeTeam.id}>{homeTeam.name}</option>
                   <option value={awayTeam.id}>{awayTeam.name}</option>
@@ -341,7 +341,7 @@ export const MatchModal: React.FC<MatchModalProps> = ({
                 <select
                   value={selectedPlayerId}
                   onChange={(e) => setSelectedPlayerId(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white"
+                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-ink"
                 >
                   <option value="">-- Seleccionar --</option>
                   {(activeTeam.players || []).map((p) => (
@@ -358,7 +358,7 @@ export const MatchModal: React.FC<MatchModalProps> = ({
                 <select
                   value={eventType}
                   onChange={(e) => setEventType(e.target.value as EventType)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white"
+                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-ink"
                 >
                   <option value="goal">⚽ Gol</option>
                   <option value="yellow_card">🟨 Tarjeta Amarilla</option>
@@ -375,7 +375,7 @@ export const MatchModal: React.FC<MatchModalProps> = ({
                     placeholder="Min"
                     value={eventMinute}
                     onChange={(e) => setEventMinute(e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white font-mono"
+                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-ink font-mono"
                   />
                 </div>
                 <button
@@ -404,7 +404,7 @@ export const MatchModal: React.FC<MatchModalProps> = ({
                         <span>
                           {ev.type === 'goal' ? '⚽' : ev.type === 'yellow_card' ? '🟨' : '🟥'}
                         </span>
-                        <span className="font-semibold text-white">
+                        <span className="font-semibold text-ink">
                           {player ? player.name : 'Jugador'}
                         </span>
                         <span className="text-[11px] text-slate-400">
@@ -441,7 +441,7 @@ export const MatchModal: React.FC<MatchModalProps> = ({
               <select
                 value={mvpPlayerId}
                 onChange={(e) => setMvpPlayerId(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white"
+                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-ink"
               >
                 <option value="">-- Sin asignar --</option>
                 {allPlayers.map((p) => (
@@ -462,7 +462,7 @@ export const MatchModal: React.FC<MatchModalProps> = ({
                 placeholder="Nombre del árbitro"
                 value={referee}
                 onChange={(e) => setReferee(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white"
+                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-ink"
               />
             </div>
           </div>

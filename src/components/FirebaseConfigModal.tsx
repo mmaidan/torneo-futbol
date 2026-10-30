@@ -89,7 +89,7 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
               <Cloud className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white">
+              <h2 className="text-base font-bold text-ink">
                 Sincronización Cloud (Firebase Firestore)
               </h2>
               <p className="text-xs text-slate-400">
@@ -99,7 +99,7 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-ink hover:bg-slate-800 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -145,7 +145,7 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
                 placeholder="AIzaSy..."
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono"
+                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-ink font-mono"
               />
             </div>
 
@@ -156,7 +156,7 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
                 placeholder="mi-torneo-futbol-app"
                 value={projectId}
                 onChange={(e) => setProjectId(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono"
+                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-ink font-mono"
               />
             </div>
 
@@ -168,7 +168,7 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
                   placeholder="1:123456789:web:abcdef"
                   value={appId}
                   onChange={(e) => setAppId(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono"
+                  className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-ink font-mono"
                 />
               </div>
 
@@ -179,7 +179,7 @@ export const FirebaseConfigModal: React.FC<FirebaseConfigModalProps> = ({
                   placeholder="proyecto.firebaseapp.com"
                   value={authDomain}
                   onChange={(e) => setAuthDomain(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono"
+                  className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-ink font-mono"
                 />
               </div>
             </div>

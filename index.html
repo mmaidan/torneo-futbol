@@ -6,7 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Chancay F6 - Torneos</title>
     <meta name="description" content="Posiciones, fixture, goleadores y equipos de los torneos de Chancay F6." />
-    <meta name="theme-color" content="#020617" />
+    <meta name="theme-color" content="#050a18" />
+    <script>
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem('chancay_theme'); } catch (e) {}
+        // Arranca en modo noche; el modo día es una opción que elige cada persona.
+        if (t !== 'light' && t !== 'dark') t = 'dark';
+        var r = document.documentElement;
+        r.setAttribute('data-theme', t);
+        r.classList.toggle('dark', t === 'dark');
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', t === 'light' ? '#f4f6fb' : '#050a18');
+      })();
+    </script>
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-capable" content="yes" />

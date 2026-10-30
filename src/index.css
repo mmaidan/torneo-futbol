@@ -2,12 +2,83 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ------------------------------------------------------------------
+   Paleta Chancay F6. Los valores son canales RGB (para que funcionen
+   las transparencias de Tailwind, por ejemplo bg-slate-800/60).
+   Noche = azul marino del escudo. Día = fondo claro, texto azul oscuro.
+   ------------------------------------------------------------------ */
+:root,
+:root[data-theme="dark"],
+.paper {
+  color-scheme: dark;
+  --ink: 255 255 255;
+  --slate-50: 244 246 250;
+  --slate-100: 232 236 244;
+  --slate-200: 211 218 232;
+  --slate-300: 180 191 212;
+  --slate-400: 141 155 184;
+  --slate-500: 95 113 151;
+  --slate-600: 58 77 117;
+  --slate-700: 34 52 90;
+  --slate-800: 20 35 63;
+  --slate-850: 14 26 51;
+  --slate-900: 10 18 38;
+  --slate-950: 5 10 24;
+  --brand-300: 139 179 255;
+  --brand-400: 90 140 240;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --ink: 10 17 36;
+  --slate-50: 10 17 36;
+  --slate-100: 20 28 51;
+  --slate-200: 42 53 80;
+  --slate-300: 63 75 102;
+  --slate-400: 91 105 133;
+  --slate-500: 122 136 165;
+  --slate-600: 168 180 203;
+  --slate-700: 205 213 227;
+  --slate-800: 226 231 240;
+  --slate-850: 238 241 247;
+  --slate-900: 255 255 255;
+  --slate-950: 244 246 251;
+  --brand-300: 31 95 209;
+  --brand-400: 0 64 176;
+}
+
+/* La planilla imprimible del árbitro es una hoja blanca en cualquier modo. */
+.paper {
+  color: #0a1226;
+}
+
 @layer base {
   body {
     @apply bg-slate-950 text-slate-100 font-sans;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 }
+
+/* Colores de estado (ganó, perdió, advertencia) más oscuros en modo día,
+   para que se lean sobre fondo claro. */
+:root[data-theme="light"] .text-rose-500,
+:root[data-theme="light"] .text-rose-400,
+:root[data-theme="light"] .text-rose-300,
+:root[data-theme="light"] .text-rose-200 { color: #be123c; }
+:root[data-theme="light"] .text-amber-400,
+:root[data-theme="light"] .text-amber-300 { color: #b45309; }
+:root[data-theme="light"] .text-emerald-400,
+:root[data-theme="light"] .text-emerald-300 { color: #047857; }
+:root[data-theme="light"] .text-orange-400 { color: #c2410c; }
+:root[data-theme="light"] .text-yellow-400,
+:root[data-theme="light"] .text-yellow-300 { color: #a16207; }
+:root[data-theme="light"] .text-blue-400 { color: #1d4ed8; }
+:root[data-theme="light"] [class~="bg-rose-950/40"],
+:root[data-theme="light"] [class~="bg-rose-950/70"] { background-color: #fff1f2; }
+:root[data-theme="light"] [class~="bg-emerald-950/40"] { background-color: #ecfdf5; }
+:root[data-theme="light"] .border-rose-900 { border-color: #fecdd3; }
+:root[data-theme="light"] .border-emerald-800,
+:root[data-theme="light"] .border-emerald-900 { border-color: #a7f3d0; }
 
 /* Custom scrollbar for sleek sporty look */
 ::-webkit-scrollbar {
@@ -16,16 +87,16 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #090d16;
+  background: rgb(var(--slate-950));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: rgb(var(--slate-800));
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: rgb(var(--slate-700));
 }
 
 @media print {

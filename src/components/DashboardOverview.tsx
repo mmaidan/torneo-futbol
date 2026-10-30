@@ -54,7 +54,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
               <Sparkles className="w-3.5 h-3.5" />
               <span>Torneo Activo</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-black text-ink tracking-tight">
               {tournament.name}
             </h2>
             <p className="text-sm text-slate-400 mt-1 max-w-xl">
@@ -113,7 +113,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full" style={{ backgroundColor: leader.teamColor }} />
-                <h4 className="text-base font-black text-white truncate">{leader.teamName}</h4>
+                <h4 className="text-base font-black text-ink truncate">{leader.teamName}</h4>
               </div>
               <p className="text-xs text-slate-400 mt-1 font-mono">
                 <span className="font-bold text-amber-400">{leader.points} pts</span> • {leader.played} PJ • Dif: {leader.goalDiff > 0 ? `+${leader.goalDiff}` : leader.goalDiff}
@@ -137,7 +137,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
           </div>
           {topScorer ? (
             <div>
-              <h4 className="text-base font-black text-white truncate">{topScorer.playerName}</h4>
+              <h4 className="text-base font-black text-ink truncate">{topScorer.playerName}</h4>
               <p className="text-xs text-slate-400 mt-1 font-mono">
                 <span className="font-bold text-orange-400">{topScorer.goals} goles</span> • {topScorer.teamName}
               </p>
@@ -159,7 +159,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
             </div>
           </div>
           <div>
-            <h4 className="text-2xl font-black text-white">{tournament.teams.length}</h4>
+            <h4 className="text-2xl font-black text-ink">{tournament.teams.length}</h4>
             <p className="text-xs text-slate-400 mt-1">
               {tournament.teams.reduce((acc, t) => acc + (t.players?.length || 0), 0)} jugadores registrados
             </p>
@@ -178,7 +178,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
             </div>
           </div>
           <div>
-            <h4 className="text-base font-black text-white">
+            <h4 className="text-base font-black text-ink">
               {tournament.format === 'league' ? 'Liga Regular' : 'Playoffs'}
             </h4>
             <p className="text-xs text-slate-400 mt-1">
@@ -194,7 +194,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <Radio className="w-5 h-5 text-rose-500 animate-pulse" />
-            <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+            <h3 className="text-sm font-bold text-ink uppercase tracking-wider">
               Partidos en Directo Ahora
             </h3>
           </div>
@@ -217,7 +217,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Clock className="w-4 h-4 text-brand-400" />
-            <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+            <h3 className="text-sm font-bold text-ink uppercase tracking-wider">
               Próximos Partidos en Agenda
             </h3>
           </div>

@@ -89,7 +89,7 @@ export const FixtureView: React.FC<FixtureViewProps> = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Calendar className="w-4 h-4 text-brand-400" />
-            <h2 className="text-sm font-bold text-white uppercase tracking-wider">
+            <h2 className="text-sm font-bold text-ink uppercase tracking-wider">
               Cruces & Fixture
             </h2>
           </div>
@@ -129,7 +129,7 @@ export const FixtureView: React.FC<FixtureViewProps> = ({
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all ${
                   selectedRound === rnd
                     ? 'bg-brand-600 text-white shadow-sm'
-                    : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
+                    : 'bg-slate-950 text-slate-400 hover:text-ink border border-slate-800'
                 }`}
               >
                 Fecha {rnd}
@@ -144,13 +144,13 @@ export const FixtureView: React.FC<FixtureViewProps> = ({
       {isCreatingCruce && (
         <div className="bg-slate-900 border border-brand-500/60 rounded-xl p-4 shadow-xl space-y-3">
           <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-            <div className="flex items-center gap-2 text-sm font-bold text-white">
+            <div className="flex items-center gap-2 text-sm font-bold text-ink">
               <Swords className="w-4 h-4 text-brand-400" />
               <span>Armar Nuevo Cruce (Fútbol 6)</span>
             </div>
             <button 
               onClick={() => setIsCreatingCruce(false)}
-              className="text-slate-400 hover:text-white"
+              className="text-slate-400 hover:text-ink"
             >
               <X className="w-4 h-4" />
             </button>
@@ -164,7 +164,7 @@ export const FixtureView: React.FC<FixtureViewProps> = ({
                 min={1}
                 value={cruceRound}
                 onChange={(e) => setCruceRound(Number(e.target.value))}
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white font-mono"
+                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-ink font-mono"
               />
             </div>
 
@@ -175,7 +175,7 @@ export const FixtureView: React.FC<FixtureViewProps> = ({
                 placeholder="Cancha 1"
                 value={crucePitch}
                 onChange={(e) => setCrucePitch(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white"
+                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-ink"
               />
             </div>
 
@@ -184,7 +184,7 @@ export const FixtureView: React.FC<FixtureViewProps> = ({
               <select
                 value={cruceHomeTeamId}
                 onChange={(e) => setCruceHomeTeamId(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white font-medium"
+                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-ink font-medium"
               >
                 {tournament.teams.map((t) => (
                   <option key={t.id} value={t.id}>{t.name}</option>
@@ -197,7 +197,7 @@ export const FixtureView: React.FC<FixtureViewProps> = ({
               <select
                 value={cruceAwayTeamId}
                 onChange={(e) => setCruceAwayTeamId(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white font-medium"
+                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-ink font-medium"
               >
                 {tournament.teams.map((t) => (
                   <option key={t.id} value={t.id}>{t.name}</option>
@@ -211,7 +211,7 @@ export const FixtureView: React.FC<FixtureViewProps> = ({
                 type="date"
                 value={cruceDate}
                 onChange={(e) => setCruceDate(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white"
+                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-ink"
               />
             </div>
 
@@ -221,7 +221,7 @@ export const FixtureView: React.FC<FixtureViewProps> = ({
                 type="time"
                 value={cruceTime}
                 onChange={(e) => setCruceTime(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-white"
+                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-ink"
               />
             </div>
           </div>
