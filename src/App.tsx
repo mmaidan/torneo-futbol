@@ -25,6 +25,7 @@ import { FirebaseConfigModal } from './components/FirebaseConfigModal';
 import { ShareModal } from './components/ShareModal';
 import { AdminLoginModal } from './components/AdminLoginModal';
 import { AdminsModal } from './components/AdminsModal';
+import { RecoveryModal } from './components/RecoveryModal';
 import { 
   Calendar, 
   Trophy, 
@@ -49,6 +50,14 @@ export const App: React.FC = () => {
   const [isFirebaseOpen, setIsFirebaseOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  // Se abre con la dirección ...?recuperar=1 (herramienta para rescatar resultados)
+  const [isRecoveryOpen, setIsRecoveryOpen] = useState<boolean>(() => {
+    try {
+      return new URLSearchParams(window.location.search).has('recuperar');
+    } catch {
+      return false;
+    }
+  });
   const [isAdminsOpen, setIsAdminsOpen] = useState(false);
   const [isCloudSynced, setIsCloudSynced] = useState<boolean>(() => !!getSavedFirebaseConfig());
 
@@ -63,10 +72,19 @@ export const App: React.FC = () => {
     if (config) {
       const unsub = subscribeToAllTournamentsCloud((cloudTournaments) => {
         if (cloudTournaments && cloudTournaments.length > 0) {
-          setTournaments(cloudTournaments);
+          // Si este dispositivo tiene resultados más nuevos que la nube (por ejemplo, porque
+          // no llegaron a subirse), no se los pisa con la copia vieja. Se exige que tenga
+          // MÁS partidos con resultado, para que un torneo vacío recién creado nunca gane.
+          const finished = (t: Tournament) => t.matches.filter((m) => m.status === 'finished').length;
+          const local = loadAllTournaments();
+          const merged = cloudTournaments.map((c) => {
+            const l = local.find((t) => t.id === c.id);
+            return l && (l.updatedAt || '') > (c.updatedAt || '') && finished(l) > finished(c) ? l : c;
+          });
+          setTournaments(merged);
           setActiveId((prevId) => {
-            const exists = cloudTournaments.some((t) => t.id === prevId);
-            return exists ? prevId : cloudTournaments[0].id;
+            const exists = merged.some((t) => t.id === prevId);
+            return exists ? prevId : merged[0].id;
           });
         }
       });
@@ -376,6 +394,15 @@ export const App: React.FC = () => {
         isOpen={isFirebaseOpen}
         onClose={() => setIsFirebaseOpen(false)}
         onConfigSaved={() => setIsCloudSynced(!!getSavedFirebaseConfig())}
+      />
+
+      <RecoveryModal
+        isOpen={isRecoveryOpen}
+        onClose={() => setIsRecoveryOpen(false)}
+        currentTournament={currentTournament}
+        isAdmin={isAdmin}
+        onRecover={handleUpdateTournament}
+        onRequestLogin={() => setIsLoginOpen(true)}
       />
 
       <AdminLoginModal
