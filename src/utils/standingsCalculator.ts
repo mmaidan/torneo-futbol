@@ -1,10 +1,16 @@
 import { Match, StandingRow, Team, ScorerStat, FairPlayStat, GoalkeeperStat, TournamentConfig } from '../types/tournament';
 
+// Regla de puntos de los torneos: ganado 2, empatado 1, perdido 0.
+// Se aplica siempre, aunque el torneo guardado traiga otro valor (antes era 3-1-0).
+export const POINTS_FOR_WIN = 2;
+export const POINTS_FOR_DRAW = 1;
+export const POINTS_FOR_LOSS = 0;
+
 export function calculateStandings(
   teams: Team[],
   matches: Match[],
-  config: TournamentConfig = {
-    pointsForWin: 3,
+  configInput: TournamentConfig = {
+    pointsForWin: 2,
     pointsForDraw: 1,
     pointsForLoss: 0,
     matchDurationMinutes: 50,
@@ -12,6 +18,13 @@ export function calculateStandings(
   },
   groupFilter?: string
 ): StandingRow[] {
+  const config: TournamentConfig = {
+    ...configInput,
+    pointsForWin: POINTS_FOR_WIN,
+    pointsForDraw: POINTS_FOR_DRAW,
+    pointsForLoss: POINTS_FOR_LOSS,
+  };
+
   // Initialize row for each team
   const standingsMap = new Map<string, StandingRow>();
 

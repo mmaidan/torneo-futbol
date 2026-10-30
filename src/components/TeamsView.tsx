@@ -58,6 +58,13 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
   const [newPlayerPosition, setNewPlayerPosition] = useState<Player['position']>('MID');
   const [newPlayerCaptain, setNewPlayerCaptain] = useState(false);
 
+  // Edición de un jugador de la plantilla
+  const [editingPlayerId, setEditingPlayerId] = useState<string | null>(null);
+  const [editName, setEditName] = useState('');
+  const [editNumber, setEditNumber] = useState('');
+  const [editPosition, setEditPosition] = useState<NonNullable<Player['position']>>('MID');
+  const [editCaptain, setEditCaptain] = useState(false);
+
   const openCreateTeam = () => {
     setTeamName('');
     setTeamShortName('');
@@ -126,6 +133,42 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
     else delete updatedTeam.logoUrl;
     onUpdateTeams(tournament.teams.map((t) => (t.id === updatedTeam.id ? updatedTeam : t)));
     setSelectedTeam(updatedTeam);
+  };
+
+  const startEditPlayer = (p: Player) => {
+    setEditingPlayerId(p.id);
+    setEditName(p.name);
+    setEditNumber(p.number !== undefined && p.number !== null ? String(p.number) : '');
+    setEditPosition(p.position || 'MID');
+    setEditCaptain(!!p.isCaptain);
+  };
+
+  const cancelEditPlayer = () => setEditingPlayerId(null);
+
+  const handleSavePlayer = () => {
+    if (!selectedTeam || !editingPlayerId || !editName.trim()) return;
+
+    const number = parseInt(editNumber, 10);
+    const players = selectedTeam.players.map((p) => {
+      if (p.id === editingPlayerId) {
+        const updated: Player = {
+          ...p,
+          name: editName.trim(),
+          position: editPosition,
+          isCaptain: editCaptain,
+        };
+        if (editNumber.trim() && !isNaN(number)) updated.number = number;
+        else delete updated.number;
+        return updated;
+      }
+      // Un solo capitán por equipo: si este jugador pasa a serlo, se lo saca a los demás.
+      return editCaptain && p.isCaptain ? { ...p, isCaptain: false } : p;
+    });
+
+    const updatedTeam: Team = { ...selectedTeam, players };
+    onUpdateTeams(tournament.teams.map((t) => (t.id === updatedTeam.id ? updatedTeam : t)));
+    setSelectedTeam(updatedTeam);
+    setEditingPlayerId(null);
   };
 
   const handleDeleteTeam = (teamId: string) => {
@@ -515,7 +558,73 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                           </td>
                         </tr>
                       ) : (
-                        selectedTeam.players.map((p) => (
+                        selectedTeam.players.map((p) => editingPlayerId === p.id ? (
+                          <tr key={p.id} className="bg-slate-800/40">
+                            <td className="py-2 px-2 text-center">
+                              <input
+                                type="number"
+                                min={0}
+                                value={editNumber}
+                                onChange={(e) => setEditNumber(e.target.value)}
+                                className="w-14 bg-slate-950 border border-slate-700 rounded-lg px-2 py-1 text-ink text-center"
+                                placeholder="#"
+                              />
+                            </td>
+                            <td className="py-2 px-2">
+                              <input
+                                type="text"
+                                value={editName}
+                                onChange={(e) => setEditName(e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') handleSavePlayer();
+                                  if (e.key === 'Escape') cancelEditPlayer();
+                                }}
+                                autoFocus
+                                className="w-full min-w-[120px] bg-slate-950 border border-slate-700 rounded-lg px-2 py-1 text-ink"
+                              />
+                            </td>
+                            <td className="py-2 px-2">
+                              <select
+                                value={editPosition}
+                                onChange={(e) => setEditPosition(e.target.value as NonNullable<Player['position']>)}
+                                className="bg-slate-950 border border-slate-700 rounded-lg px-2 py-1 text-ink"
+                              >
+                                <option value="GK">Arquero (GK)</option>
+                                <option value="DEF">Defensor (DEF)</option>
+                                <option value="MID">Medio (MID)</option>
+                                <option value="FWD">Delantero (FWD)</option>
+                              </select>
+                            </td>
+                            <td className="py-2 px-2 text-center">
+                              <input
+                                type="checkbox"
+                                checked={editCaptain}
+                                onChange={(e) => setEditCaptain(e.target.checked)}
+                                className="w-4 h-4 accent-brand-600"
+                                title="Capitán"
+                              />
+                            </td>
+                            <td className="py-2 px-2 text-right">
+                              <div className="flex items-center justify-end gap-1">
+                                <button
+                                  onClick={handleSavePlayer}
+                                  disabled={!editName.trim()}
+                                  className="p-1 text-emerald-400 hover:text-emerald-300 disabled:opacity-40"
+                                  title="Guardar cambios"
+                                >
+                                  <Check className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={cancelEditPlayer}
+                                  className="p-1 text-slate-400 hover:text-ink"
+                                  title="Cancelar"
+                                >
+                                  <X className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ) : (
                           <tr key={p.id} className="hover:bg-slate-800/40">
                             <td className="py-2.5 px-3 text-center font-mono font-bold text-brand-400">
                               {p.number || '-'}
@@ -537,13 +646,22 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                             </td>
                             {isAdmin && (
                               <td className="py-2.5 px-3 text-right">
-                                <button
+                                <div className="flex items-center justify-end gap-1">
+                                  <button
+                                    onClick={() => startEditPlayer(p)}
+                                    className="text-slate-500 hover:text-brand-400 p-1"
+                                    title="Editar jugador"
+                                  >
+                                    <Edit className="w-3.5 h-3.5" />
+                                  </button>
+                                  <button
                                   onClick={() => handleDeletePlayer(p.id)}
                                   className="text-slate-500 hover:text-rose-400 p-1"
                                   title="Eliminar jugador"
                                 >
                                   <Trash2 className="w-3.5 h-3.5" />
                                 </button>
+                                </div>
                               </td>
                             )}
                           </tr>

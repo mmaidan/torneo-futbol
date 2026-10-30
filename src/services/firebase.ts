@@ -1,6 +1,7 @@
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
 import { 
   getFirestore, 
+  initializeFirestore,
   Firestore, 
   doc, 
   setDoc, 
@@ -88,7 +89,12 @@ export function getFirebaseFirestore(): Firestore | null {
   if (!app) return null;
 
   try {
-    firestoreInstance = getFirestore(app);
+    try {
+      // Firestore rechaza los campos undefined (por ejemplo un jugador sin dorsal): se ignoran.
+      firestoreInstance = initializeFirestore(app, { ignoreUndefinedProperties: true });
+    } catch {
+      firestoreInstance = getFirestore(app);
+    }
     return firestoreInstance;
   } catch (err) {
     console.error('Failed to initialize Firestore:', err);
