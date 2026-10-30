@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { Tournament } from '../types/tournament';
 import escudoChancay from '../assets/escudo-chancay.png';
+import { InstallAppButton } from './InstallAppButton';
 
 interface NavbarProps {
   tournament: Tournament;
@@ -65,7 +66,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Right actions: Cloud Sync, Admin toggle, New */}
           <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
-            {/* Cloud Status */}
+            <InstallAppButton />
+
+            {/* Cloud Status (solo admin: el público no necesita ver la configuración) */}
+            {isAdmin && (
             <button
               onClick={onOpenFirebaseConfig}
               className={`p-1.5 rounded-lg border text-xs transition-colors ${
@@ -77,6 +81,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Cloud className="w-4 h-4" />
             </button>
+            )}
 
             {/* Nuevo Torneo (solo admin) */}
             {isAdmin && (
