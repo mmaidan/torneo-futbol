@@ -12,17 +12,9 @@ export function getStoredTheme(): Theme | null {
   }
 }
 
-export function getSystemTheme(): Theme {
-  try {
-    return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-  } catch {
-    return 'dark';
-  }
-}
-
 export function getCurrentTheme(): Theme {
   const attr = document.documentElement.getAttribute('data-theme');
-  return attr === 'light' || attr === 'dark' ? attr : getStoredTheme() ?? getSystemTheme();
+  return attr === 'light' || attr === 'dark' ? attr : getStoredTheme() ?? 'dark';
 }
 
 /** Aplica el tema a la página (y al color de la barra del celular). */

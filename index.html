@@ -11,9 +11,8 @@
       (function () {
         var t = null;
         try { t = localStorage.getItem('chancay_theme'); } catch (e) {}
-        if (t !== 'light' && t !== 'dark') {
-          t = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-        }
+        // Arranca en modo noche; el modo día es una opción que elige cada persona.
+        if (t !== 'light' && t !== 'dark') t = 'dark';
         var r = document.documentElement;
         r.setAttribute('data-theme', t);
         r.classList.toggle('dark', t === 'dark');
