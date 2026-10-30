@@ -302,7 +302,10 @@ export const App: React.FC = () => {
       </main>
 
       {/* Barra inferior para Celulares (Fácil de pulsar con el pulgar) */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 bg-slate-900 border-t border-slate-800 sm:hidden px-2 py-1 shadow-lg">
+      <div
+        className="fixed bottom-0 left-0 right-0 z-40 bg-slate-900 border-t border-slate-800 sm:hidden px-2 pt-1 shadow-lg"
+        style={{ paddingBottom: 'calc(0.25rem + env(safe-area-inset-bottom))' }}
+      >
         <div className="grid grid-cols-4 gap-1 text-[11px]">
           
           <button
