@@ -34,13 +34,24 @@ export const MatchCard: React.FC<MatchCardProps> = ({
 
   const isFinished = match.status === 'finished';
 
-  // Group goals
-  const homeGoals = (match.events || []).filter((e) => e.teamId === match.homeTeamId && e.type === 'goal');
-  const awayGoals = (match.events || []).filter((e) => e.teamId === match.awayTeamId && e.type === 'goal');
+  // Línea de tiempo: goles y tarjetas ordenados por minuto
+  const allPlayers = [...homeTeam.players, ...awayTeam.players];
+  const timeline = (match.events || [])
+    .filter((e) => e.type === 'goal' || e.type === 'yellow_card' || e.type === 'red_card' || e.type === 'blue_card')
+    .map((e, idx) => ({ e, idx }))
+    .sort((x, y) => (x.e.minute ?? 999) - (y.e.minute ?? 999) || x.idx - y.idx)
+    .map(({ e }) => e);
 
-  const getPlayerName = (playerId: string) => {
-    const p = [...homeTeam.players, ...awayTeam.players].find((item) => item.id === playerId);
-    return p ? p.name.split(' ')[0] : 'Gol';
+  const getPlayerName = (playerId: string, type: string) => {
+    const p = allPlayers.find((item) => item.id === playerId);
+    return p ? p.name : type === 'goal' ? 'Gol' : 'Tarjeta';
+  };
+
+  const EventIcon: React.FC<{ type: string }> = ({ type }) => {
+    if (type === 'goal') return <span className="text-sm leading-none" aria-label="Gol">⚽</span>;
+    const color = type === 'red_card' ? 'bg-red-600' : type === 'blue_card' ? 'bg-blue-500' : 'bg-yellow-400';
+    const label = type === 'red_card' ? 'Roja' : type === 'blue_card' ? 'Azul' : 'Amarilla';
+    return <span className={`inline-block w-2.5 h-3.5 rounded-[2px] ${color}`} aria-label={label} />;
   };
 
   return (
@@ -120,19 +131,26 @@ export const MatchCard: React.FC<MatchCardProps> = ({
 
       </div>
 
-      {/* Goles resumen en texto pequeño si el partido terminó y tiene goles */}
-      {isFinished && (homeGoals.length > 0 || awayGoals.length > 0) && (
-        <div className="mt-2 pt-2 border-t border-slate-800/60 grid grid-cols-2 gap-2 text-[11px] text-slate-400">
-          <div className="truncate">
-            {homeGoals.length > 0 && (
-              <span>⚽ {homeGoals.map((g) => getPlayerName(g.playerId)).join(', ')}</span>
-            )}
-          </div>
-          <div className="text-right truncate">
-            {awayGoals.length > 0 && (
-              <span>⚽ {awayGoals.map((g) => getPlayerName(g.playerId)).join(', ')}</span>
-            )}
-          </div>
+      {/* Línea de tiempo del partido: goles y tarjetas */}
+      {isFinished && timeline.length > 0 && (
+        <div className="mt-2 pt-2 border-t border-slate-800/60 space-y-1.5">
+          {timeline.map((ev) => {
+            const isHome = ev.teamId === match.homeTeamId;
+            const label = (
+              <span className="text-[11px] text-slate-300 break-words">
+                <span className="font-semibold">{getPlayerName(ev.playerId, ev.type)}</span>
+              </span>
+            );
+            return (
+              <div key={ev.id} className="grid grid-cols-[1fr,auto,1fr] items-center gap-3">
+                <div className="text-left">{isHome ? label : null}</div>
+                <div className="flex justify-center w-4">
+                  <EventIcon type={ev.type} />
+                </div>
+                <div className="text-right">{!isHome ? label : null}</div>
+              </div>
+            );
+          })}
         </div>
       )}
 
