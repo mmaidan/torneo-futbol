@@ -87,6 +87,7 @@ export const StandingsView: React.FC<StandingsViewProps> = ({ tournament }) => {
             <tr className="bg-slate-950 text-slate-400 border-b border-slate-800 text-[11px] font-semibold">
               <th className="py-2.5 pl-3 pr-1 text-center w-7">#</th>
               <th className="py-2.5 px-2">Club</th>
+              <th className="py-2.5 px-2 text-center font-bold text-ink" title="Puntos">Pts</th>
               <th className="py-2.5 px-1.5 text-center" title="Partidos jugados">PJ</th>
               <th className="py-2.5 px-1.5 text-center hidden sm:table-cell" title="Ganados">G</th>
               <th className="py-2.5 px-1.5 text-center hidden sm:table-cell" title="Empatados">E</th>
@@ -94,8 +95,7 @@ export const StandingsView: React.FC<StandingsViewProps> = ({ tournament }) => {
               <th className="py-2.5 px-1.5 text-center hidden sm:table-cell" title="Goles a favor">GF</th>
               <th className="py-2.5 px-1.5 text-center hidden sm:table-cell" title="Goles en contra">GC</th>
               <th className="py-2.5 px-1.5 text-center" title="Diferencia de gol">DG</th>
-              <th className="py-2.5 px-2 text-center font-black text-brand-400 bg-brand-500/10" title="Puntos">Pts</th>
-              <th className="py-2.5 px-2 text-center" title="Últimos 5 partidos">
+                            <th className="py-2.5 px-2 text-center" title="Últimos 5 partidos">
                 <span className="hidden sm:inline">Últimos 5</span>
                 <span className="sm:hidden">Últ. 5</span>
               </th>
@@ -133,6 +133,11 @@ export const StandingsView: React.FC<StandingsViewProps> = ({ tournament }) => {
                     </div>
                   </td>
 
+                  {/* Puntos (primera columna de números, solo en negrita) */}
+                  <td className="py-3 px-2 text-center font-mono font-bold text-ink text-sm sm:text-base">
+                    {row.points}
+                  </td>
+
                   {/* Estadísticas */}
                   <td className="py-3 px-1.5 text-center text-slate-300 font-mono">{row.played}</td>
                   <td className="py-3 px-1.5 text-center text-slate-300 font-mono hidden sm:table-cell">{row.won}</td>
@@ -142,13 +147,6 @@ export const StandingsView: React.FC<StandingsViewProps> = ({ tournament }) => {
                   <td className="py-3 px-1.5 text-center text-slate-300 font-mono hidden sm:table-cell">{row.goalsAgainst}</td>
                   <td className="py-3 px-1.5 text-center font-mono text-slate-300">
                     {row.goalDiff > 0 ? `+${row.goalDiff}` : row.goalDiff}
-                  </td>
-
-                  {/* Puntos */}
-                  <td className="py-3 px-2 text-center bg-brand-500/10">
-                    <span className="inline-block min-w-[2rem] px-2 py-0.5 rounded-md bg-brand-600 text-white font-mono font-black text-sm sm:text-base shadow-sm">
-                      {row.points}
-                    </span>
                   </td>
 
                   {/* Últimos 5 */}
