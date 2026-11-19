@@ -34,32 +34,25 @@ export const MatchCard: React.FC<MatchCardProps> = ({
 
   const isFinished = match.status === 'finished';
 
-  // Group goals
-  const homeGoals = (match.events || []).filter((e) => e.teamId === match.homeTeamId && e.type === 'goal');
-  const awayGoals = (match.events || []).filter((e) => e.teamId === match.awayTeamId && e.type === 'goal');
+  // Línea de tiempo: goles y tarjetas ordenados por minuto
+  const allPlayers = [...homeTeam.players, ...awayTeam.players];
+  const timeline = (match.events || [])
+    .filter((e) => e.type === 'goal' || e.type === 'yellow_card' || e.type === 'red_card' || e.type === 'blue_card')
+    .map((e, idx) => ({ e, idx }))
+    .sort((x, y) => (x.e.minute ?? 999) - (y.e.minute ?? 999) || x.idx - y.idx)
+    .map(({ e }) => e);
 
-  // Agrupa los goles por jugador: "Pérez (12', 30')" ordenados por minuto
-  const summarizeGoals = (goals: typeof homeGoals) => {
-    const players = [...homeTeam.players, ...awayTeam.players];
-    const byPlayer = new Map<string, { name: string; minutes: number[]; count: number }>();
-    [...goals]
-      .sort((a, b) => (a.minute ?? 999) - (b.minute ?? 999))
-      .forEach((g) => {
-        const name = players.find((p) => p.id === g.playerId)?.name || 'Gol';
-        const key = g.playerId || name;
-        const entry = byPlayer.get(key) || { name, minutes: [], count: 0 };
-        entry.count += 1;
-        if (g.minute !== undefined && g.minute !== null) entry.minutes.push(g.minute);
-        byPlayer.set(key, entry);
-      });
-    return Array.from(byPlayer.values()).map((e) => ({
-      name: e.name,
-      detail: e.minutes.length > 0 ? ` (${e.minutes.map((m) => `${m}'`).join(', ')})` : e.count > 1 ? ` (x${e.count})` : '',
-    }));
+  const getPlayerName = (playerId: string, type: string) => {
+    const p = allPlayers.find((item) => item.id === playerId);
+    return p ? p.name : type === 'goal' ? 'Gol' : 'Tarjeta';
   };
 
-  const homeScorers = summarizeGoals(homeGoals);
-  const awayScorers = summarizeGoals(awayGoals);
+  const EventIcon: React.FC<{ type: string }> = ({ type }) => {
+    if (type === 'goal') return <span className="text-sm leading-none" aria-label="Gol">⚽</span>;
+    const color = type === 'red_card' ? 'bg-red-600' : type === 'blue_card' ? 'bg-blue-500' : 'bg-yellow-400';
+    const label = type === 'red_card' ? 'Roja' : type === 'blue_card' ? 'Azul' : 'Amarilla';
+    return <span className={`inline-block w-2.5 h-3.5 rounded-[2px] ${color}`} aria-label={label} />;
+  };
 
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-xl p-3.5 shadow-sm hover:border-slate-700 transition-colors">
@@ -138,25 +131,29 @@ export const MatchCard: React.FC<MatchCardProps> = ({
 
       </div>
 
-      {/* Goleadores del partido */}
-      {isFinished && (homeScorers.length > 0 || awayScorers.length > 0) && (
-        <div className="mt-2 pt-2 border-t border-slate-800/60 grid grid-cols-2 gap-3 text-[11px] text-slate-300">
-          <ul className="space-y-0.5">
-            {homeScorers.map((g, i) => (
-              <li key={i} className="break-words">
-                ⚽ <span className="font-semibold">{g.name}</span>
-                <span className="text-slate-400">{g.detail}</span>
-              </li>
-            ))}
-          </ul>
-          <ul className="space-y-0.5 text-right">
-            {awayScorers.map((g, i) => (
-              <li key={i} className="break-words">
-                <span className="font-semibold">{g.name}</span>
-                <span className="text-slate-400">{g.detail}</span> ⚽
-              </li>
-            ))}
-          </ul>
+      {/* Línea de tiempo del partido: goles y tarjetas */}
+      {isFinished && timeline.length > 0 && (
+        <div className="mt-2 pt-2 border-t border-slate-800/60 space-y-1.5">
+          {timeline.map((ev) => {
+            const isHome = ev.teamId === match.homeTeamId;
+            const label = (
+              <span className="text-[11px] text-slate-300 break-words">
+                <span className="font-semibold">{getPlayerName(ev.playerId, ev.type)}</span>
+                {ev.minute !== undefined && ev.minute !== null && (
+                  <span className="text-slate-400"> {ev.minute}'</span>
+                )}
+              </span>
+            );
+            return (
+              <div key={ev.id} className="grid grid-cols-[1fr,auto,1fr] items-center gap-3">
+                <div className="text-left">{isHome ? label : null}</div>
+                <div className="flex justify-center w-4">
+                  <EventIcon type={ev.type} />
+                </div>
+                <div className="text-right">{!isHome ? label : null}</div>
+              </div>
+            );
+          })}
         </div>
       )}
 
