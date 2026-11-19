@@ -1,6 +1,6 @@
 // Service worker de Chancay F6: deja la app abrir sin señal con lo último que vio.
 // Solo toca archivos del propio sitio; Firebase y Google nunca pasan por acá.
-const CACHE = 'chancay-f6-v1';
+const CACHE = 'chancay-f6-v2';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './favicon.png', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', (event) => {
@@ -44,17 +44,22 @@ self.addEventListener('fetch', (event) => {
   }
 
   // Archivos (JS, CSS e imágenes llevan un código en el nombre y no cambian): primero lo guardado.
+  // Solo se guarda lo que realmente es un archivo: si el servidor contesta una página HTML
+  // (por ejemplo durante una publicación nueva), eso NO se guarda como si fuera el CSS o el JS.
   event.respondWith(
-    caches.match(req).then(
-      (hit) =>
-        hit ||
-        fetch(req).then((res) => {
-          if (res.ok) {
-            const copy = res.clone();
-            caches.open(CACHE).then((cache) => cache.put(req, copy));
-          }
-          return res;
-        })
-    )
+    caches.match(req).then((hit) => {
+      if (hit) {
+        const t = hit.headers.get('content-type') || '';
+        if (!t.includes('text/html')) return hit;
+      }
+      return fetch(req).then((res) => {
+        const type = res.headers.get('content-type') || '';
+        if (res.ok && !type.includes('text/html')) {
+          const copy = res.clone();
+          caches.open(CACHE).then((cache) => cache.put(req, copy));
+        }
+        return res;
+      });
+    })
   );
 });
