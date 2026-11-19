@@ -36,11 +36,29 @@ export const MatchCard: React.FC<MatchCardProps> = ({
 
   // Línea de tiempo: goles y tarjetas ordenados por minuto
   const allPlayers = [...homeTeam.players, ...awayTeam.players];
-  const timeline = (match.events || [])
+  const sortedEvents = (match.events || [])
     .filter((e) => e.type === 'goal' || e.type === 'yellow_card' || e.type === 'red_card' || e.type === 'blue_card')
     .map((e, idx) => ({ e, idx }))
     .sort((x, y) => (x.e.minute ?? 999) - (y.e.minute ?? 999) || x.idx - y.idx)
     .map(({ e }) => e);
+
+  // Los goles de un mismo jugador se agrupan en una sola línea: "Sanchez Ruben (4)"
+  const timeline: { ev: (typeof sortedEvents)[number]; count: number }[] = [];
+  const goalRows = new Map<string, { ev: (typeof sortedEvents)[number]; count: number }>();
+  sortedEvents.forEach((ev) => {
+    if (ev.type === 'goal' && ev.playerId) {
+      const existing = goalRows.get(ev.playerId);
+      if (existing) {
+        existing.count += 1;
+        return;
+      }
+      const row = { ev, count: 1 };
+      goalRows.set(ev.playerId, row);
+      timeline.push(row);
+      return;
+    }
+    timeline.push({ ev, count: 1 });
+  });
 
   const getPlayerName = (playerId: string, type: string) => {
     const p = allPlayers.find((item) => item.id === playerId);
@@ -134,11 +152,12 @@ export const MatchCard: React.FC<MatchCardProps> = ({
       {/* Línea de tiempo del partido: goles y tarjetas */}
       {isFinished && timeline.length > 0 && (
         <div className="mt-2 pt-2 border-t border-slate-800/60 space-y-1.5">
-          {timeline.map((ev) => {
+          {timeline.map(({ ev, count }) => {
             const isHome = ev.teamId === match.homeTeamId;
             const label = (
               <span className="text-[11px] text-slate-300 break-words">
                 <span className="font-semibold">{getPlayerName(ev.playerId, ev.type)}</span>
+                {count > 1 && <span className="text-slate-400"> ({count})</span>}
               </span>
             );
             return (
