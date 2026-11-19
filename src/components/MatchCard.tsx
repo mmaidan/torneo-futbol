@@ -38,10 +38,28 @@ export const MatchCard: React.FC<MatchCardProps> = ({
   const homeGoals = (match.events || []).filter((e) => e.teamId === match.homeTeamId && e.type === 'goal');
   const awayGoals = (match.events || []).filter((e) => e.teamId === match.awayTeamId && e.type === 'goal');
 
-  const getPlayerName = (playerId: string) => {
-    const p = [...homeTeam.players, ...awayTeam.players].find((item) => item.id === playerId);
-    return p ? p.name.split(' ')[0] : 'Gol';
+  // Agrupa los goles por jugador: "Pérez (12', 30')" ordenados por minuto
+  const summarizeGoals = (goals: typeof homeGoals) => {
+    const players = [...homeTeam.players, ...awayTeam.players];
+    const byPlayer = new Map<string, { name: string; minutes: number[]; count: number }>();
+    [...goals]
+      .sort((a, b) => (a.minute ?? 999) - (b.minute ?? 999))
+      .forEach((g) => {
+        const name = players.find((p) => p.id === g.playerId)?.name || 'Gol';
+        const key = g.playerId || name;
+        const entry = byPlayer.get(key) || { name, minutes: [], count: 0 };
+        entry.count += 1;
+        if (g.minute !== undefined && g.minute !== null) entry.minutes.push(g.minute);
+        byPlayer.set(key, entry);
+      });
+    return Array.from(byPlayer.values()).map((e) => ({
+      name: e.name,
+      detail: e.minutes.length > 0 ? ` (${e.minutes.map((m) => `${m}'`).join(', ')})` : e.count > 1 ? ` (x${e.count})` : '',
+    }));
   };
+
+  const homeScorers = summarizeGoals(homeGoals);
+  const awayScorers = summarizeGoals(awayGoals);
 
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-xl p-3.5 shadow-sm hover:border-slate-700 transition-colors">
@@ -120,19 +138,25 @@ export const MatchCard: React.FC<MatchCardProps> = ({
 
       </div>
 
-      {/* Goles resumen en texto pequeño si el partido terminó y tiene goles */}
-      {isFinished && (homeGoals.length > 0 || awayGoals.length > 0) && (
-        <div className="mt-2 pt-2 border-t border-slate-800/60 grid grid-cols-2 gap-2 text-[11px] text-slate-400">
-          <div className="truncate">
-            {homeGoals.length > 0 && (
-              <span>⚽ {homeGoals.map((g) => getPlayerName(g.playerId)).join(', ')}</span>
-            )}
-          </div>
-          <div className="text-right truncate">
-            {awayGoals.length > 0 && (
-              <span>⚽ {awayGoals.map((g) => getPlayerName(g.playerId)).join(', ')}</span>
-            )}
-          </div>
+      {/* Goleadores del partido */}
+      {isFinished && (homeScorers.length > 0 || awayScorers.length > 0) && (
+        <div className="mt-2 pt-2 border-t border-slate-800/60 grid grid-cols-2 gap-3 text-[11px] text-slate-300">
+          <ul className="space-y-0.5">
+            {homeScorers.map((g, i) => (
+              <li key={i} className="break-words">
+                ⚽ <span className="font-semibold">{g.name}</span>
+                <span className="text-slate-400">{g.detail}</span>
+              </li>
+            ))}
+          </ul>
+          <ul className="space-y-0.5 text-right">
+            {awayScorers.map((g, i) => (
+              <li key={i} className="break-words">
+                <span className="font-semibold">{g.name}</span>
+                <span className="text-slate-400">{g.detail}</span> ⚽
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 
