@@ -207,6 +207,44 @@ export function calculateFairPlay(teams: Team[], matches: Match[]): FairPlayStat
   return list.sort((a, b) => a.pointsDeducted - b.pointsDeducted);
 }
 
+export interface PlayerCardStat {
+  playerId: string;
+  playerName: string;
+  teamId: string;
+  teamName: string;
+  teamColor: string;
+  yellowCards: number;
+  redCards: number;
+}
+
+/** Tarjetas amarillas y rojas acumuladas por jugador (solo jugadores con al menos una). */
+export function calculatePlayerCards(teams: Team[], matches: Match[]): PlayerCardStat[] {
+  const playerToTeam = new Map<string, { player: Team['players'][0]; team: Team }>();
+  teams.forEach((t) => t.players.forEach((p) => playerToTeam.set(p.id, { player: p, team: t })));
+
+  const map = new Map<string, PlayerCardStat>();
+  matches.forEach((m) => {
+    (m.events || []).forEach((e) => {
+      if (e.type !== 'yellow_card' && e.type !== 'red_card') return;
+      const found = playerToTeam.get(e.playerId);
+      if (!found) return;
+      const cur = map.get(e.playerId) || {
+        playerId: found.player.id,
+        playerName: found.player.name,
+        teamId: found.team.id,
+        teamName: found.team.name,
+        teamColor: found.team.color,
+        yellowCards: 0,
+        redCards: 0,
+      };
+      if (e.type === 'yellow_card') cur.yellowCards += 1;
+      else cur.redCards += 1;
+      map.set(e.playerId, cur);
+    });
+  });
+  return Array.from(map.values());
+}
+
 export function calculateBestDefense(teams: Team[], matches: Match[]): GoalkeeperStat[] {
   const map = new Map<string, GoalkeeperStat>();
 
