@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Tournament } from '../types/tournament';
 import { calculateTopScorers, calculateFairPlay } from '../utils/standingsCalculator';
 import { Flame, ShieldCheck } from 'lucide-react';
+import { TeamBadge } from './TeamBadge';
 
 interface StatsViewProps {
   tournament: Tournament;
@@ -9,6 +10,7 @@ interface StatsViewProps {
 
 export const StatsView: React.FC<StatsViewProps> = ({ tournament }) => {
   const [tab, setTab] = useState<'scorers' | 'fairplay'>('scorers');
+  const logoOf = (teamId: string) => tournament.teams.find((t) => t.id === teamId)?.logoUrl;
 
   const topScorers = calculateTopScorers(tournament.teams, tournament.matches);
   const fairPlayStats = calculateFairPlay(tournament.teams, tournament.matches);
@@ -65,10 +67,13 @@ export const StatsView: React.FC<StatsViewProps> = ({ tournament }) => {
                       {scorer.playerName}
                     </td>
                     <td className="py-2.5 px-3 text-slate-300">
-                      <div className="flex items-center gap-1.5">
-                        <div
-                          className="w-2.5 h-2.5 rounded-full"
-                          style={{ backgroundColor: scorer.teamColor }}
+                      <div className="flex items-center gap-2">
+                        <TeamBadge
+                          logoUrl={logoOf(scorer.teamId)}
+                          color={scorer.teamColor}
+                          name={scorer.teamName}
+                          size={24}
+                          fallbackClassName="w-2.5 h-2.5 rounded-full flex-shrink-0"
                         />
                         <span className="truncate max-w-[110px] sm:max-w-none">{scorer.teamName}</span>
                       </div>
@@ -103,9 +108,12 @@ export const StatsView: React.FC<StatsViewProps> = ({ tournament }) => {
                   </td>
                   <td className="py-2.5 px-3 font-semibold text-ink">
                     <div className="flex items-center gap-1.5">
-                      <div
-                        className="w-2.5 h-2.5 rounded-full"
-                        style={{ backgroundColor: stat.teamColor }}
+                      <TeamBadge
+                        logoUrl={logoOf(stat.teamId)}
+                        color={stat.teamColor}
+                        name={stat.teamName}
+                        size={24}
+                        fallbackClassName="w-2.5 h-2.5 rounded-full flex-shrink-0"
                       />
                       <span>{stat.teamName}</span>
                     </div>
