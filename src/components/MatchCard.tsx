@@ -37,30 +37,31 @@ export const MatchCard: React.FC<MatchCardProps> = ({
   // Línea de tiempo: goles y tarjetas ordenados por minuto
   const allPlayers = [...homeTeam.players, ...awayTeam.players];
   const sortedEvents = (match.events || [])
-    .filter((e) => e.type === 'goal' || e.type === 'yellow_card' || e.type === 'red_card' || e.type === 'blue_card')
     .map((e, idx) => ({ e, idx }))
     .sort((x, y) => (x.e.minute ?? 999) - (y.e.minute ?? 999) || x.idx - y.idx)
     .map(({ e }) => e);
 
-  // Los eventos iguales de un mismo jugador se agrupan en una sola línea: "Sanchez Ruben (4)".
-  // Va por tipo: las amarillas de un jugador van juntas y su roja en otra línea.
-  const timeline: { ev: (typeof sortedEvents)[number]; count: number }[] = [];
-  const rows = new Map<string, { ev: (typeof sortedEvents)[number]; count: number }>();
-  sortedEvents.forEach((ev) => {
-    if (ev.playerId) {
-      const key = `${ev.type}:${ev.playerId}`;
-      const existing = rows.get(key);
-      if (existing) {
-        existing.count += 1;
-        return;
-      }
-      const row = { ev, count: 1 };
-      rows.set(key, row);
-      timeline.push(row);
-      return;
-    }
-    timeline.push({ ev, count: 1 });
-  });
+  // Un bloque por tipo de evento (goles, amarillas, rojas, azules). Dentro de cada bloque,
+  // los eventos de un mismo jugador se agrupan en una línea: "Sanchez Ruben (4)".
+  const BLOCK_TYPES = ['goal', 'yellow_card', 'red_card', 'blue_card'] as const;
+  type Row = { key: string; playerId: string; count: number };
+  const buildRows = (type: string, teamId: string): Row[] => {
+    const rows = new Map<string, Row>();
+    sortedEvents
+      .filter((e) => e.type === type && e.teamId === teamId)
+      .forEach((e, i) => {
+        const key = e.playerId || `sin-jugador-${i}`;
+        const existing = rows.get(key);
+        if (existing) existing.count += 1;
+        else rows.set(key, { key, playerId: e.playerId, count: 1 });
+      });
+    return Array.from(rows.values());
+  };
+  const eventBlocks = BLOCK_TYPES.map((type) => ({
+    type,
+    home: buildRows(type, match.homeTeamId),
+    away: buildRows(type, match.awayTeamId),
+  })).filter((blk) => blk.home.length > 0 || blk.away.length > 0);
 
   const getPlayerName = (playerId: string, type: string) => {
     const p = allPlayers.find((item) => item.id === playerId);
@@ -151,27 +152,32 @@ export const MatchCard: React.FC<MatchCardProps> = ({
 
       </div>
 
-      {/* Línea de tiempo del partido: goles y tarjetas */}
-      {isFinished && timeline.length > 0 && (
-        <div className="mt-2 pt-2 border-t border-slate-800/60 space-y-1.5">
-          {timeline.map(({ ev, count }) => {
-            const isHome = ev.teamId === match.homeTeamId;
-            const label = (
-              <span className="text-[11px] text-slate-300 break-words">
-                <span className="font-semibold">{getPlayerName(ev.playerId, ev.type)}</span>
-                {count > 1 && <span className="text-slate-400"> ({count})</span>}
-              </span>
-            );
-            return (
-              <div key={ev.id} className="grid grid-cols-[1fr,auto,1fr] items-center gap-3">
-                <div className="text-left">{isHome ? label : null}</div>
-                <div className="flex justify-center w-4">
-                  <EventIcon type={ev.type} />
-                </div>
-                <div className="text-right">{!isHome ? label : null}</div>
+      {/* Goles y tarjetas: un bloque por tipo, con el ícono una sola vez en el centro */}
+      {isFinished && eventBlocks.length > 0 && (
+        <div className="mt-2 pt-2 border-t border-slate-800/60 space-y-2">
+          {eventBlocks.map((blk) => (
+            <div key={blk.type} className="grid grid-cols-[1fr,auto,1fr] items-start gap-3">
+              <ul className="space-y-0.5 text-left">
+                {blk.home.map((r) => (
+                  <li key={r.key} className="text-[11px] leading-snug text-slate-300 break-words">
+                    <span className="font-semibold">{getPlayerName(r.playerId, blk.type)}</span>
+                    {r.count > 1 && <span className="text-slate-400"> ({r.count})</span>}
+                  </li>
+                ))}
+              </ul>
+              <div className="flex justify-center w-4 pt-0.5">
+                <EventIcon type={blk.type} />
               </div>
-            );
-          })}
+              <ul className="space-y-0.5 text-right">
+                {blk.away.map((r) => (
+                  <li key={r.key} className="text-[11px] leading-snug text-slate-300 break-words">
+                    <span className="font-semibold">{getPlayerName(r.playerId, blk.type)}</span>
+                    {r.count > 1 && <span className="text-slate-400"> ({r.count})</span>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
       )}
 
