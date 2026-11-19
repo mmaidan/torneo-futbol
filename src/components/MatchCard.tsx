@@ -106,27 +106,27 @@ export const MatchCard: React.FC<MatchCardProps> = ({
         </div>
       </div>
 
-      {/* Main Match Row: Home Team - Score - Away Team */}
-      <div className="grid grid-cols-[1fr,auto,1fr] items-center gap-2 py-1">
-        
+      {/* Main Match Row: Escudo grande con el nombre abajo - Marcador - Escudo grande con el nombre abajo */}
+      <div className="grid grid-cols-[1fr,auto,1fr] items-start gap-2 py-1">
+
         {/* Local Team */}
-        <div className="flex items-center gap-2 min-w-0">
+        <div className="flex flex-col items-center gap-1.5 min-w-0 text-center">
           <TeamBadge
             logoUrl={homeTeam.logoUrl}
             color={homeTeam.color || '#3b82f6'}
             name={homeTeam.name}
-            size={28}
-            fallbackClassName="w-3 h-6 rounded-sm flex-shrink-0"
+            size={56}
+            fallbackClassName="w-6 h-12 rounded-sm flex-shrink-0"
           />
-          <span className="text-sm font-bold text-ink truncate" title={homeTeam.name}>
+          <span className="text-xs font-bold text-ink leading-tight break-words" title={homeTeam.name}>
             {homeTeam.name}
           </span>
         </div>
 
         {/* Score or VS */}
-        <div className="px-2 text-center">
+        <div className="px-2 text-center mt-3">
           {isFinished ? (
-            <div className="bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800 font-mono font-black text-lg text-ink">
+            <div className="bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800 font-mono font-black text-xl text-ink">
               {match.homeScore ?? 0} - {match.awayScore ?? 0}
             </div>
           ) : (
@@ -137,17 +137,17 @@ export const MatchCard: React.FC<MatchCardProps> = ({
         </div>
 
         {/* Away Team */}
-        <div className="flex items-center justify-end gap-2 min-w-0 text-right">
-          <span className="text-sm font-bold text-ink truncate" title={awayTeam.name}>
-            {awayTeam.name}
-          </span>
+        <div className="flex flex-col items-center gap-1.5 min-w-0 text-center">
           <TeamBadge
             logoUrl={awayTeam.logoUrl}
             color={awayTeam.color || '#ef4444'}
             name={awayTeam.name}
-            size={28}
-            fallbackClassName="w-3 h-6 rounded-sm flex-shrink-0"
+            size={56}
+            fallbackClassName="w-6 h-12 rounded-sm flex-shrink-0"
           />
+          <span className="text-xs font-bold text-ink leading-tight break-words" title={awayTeam.name}>
+            {awayTeam.name}
+          </span>
         </div>
 
       </div>
