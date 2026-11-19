@@ -317,6 +317,10 @@ export const App: React.FC = () => {
             onUpdateTeams={handleUpdateTeams}
           />
         )}
+
+        <p className="mt-8 text-center text-[11px] text-slate-500">
+          Desarrollado por Maidan Marcos
+        </p>
       </main>
 
       {/* Barra inferior para Celulares (Fácil de pulsar con el pulgar) */}
