@@ -42,18 +42,20 @@ export const MatchCard: React.FC<MatchCardProps> = ({
     .sort((x, y) => (x.e.minute ?? 999) - (y.e.minute ?? 999) || x.idx - y.idx)
     .map(({ e }) => e);
 
-  // Los goles de un mismo jugador se agrupan en una sola línea: "Sanchez Ruben (4)"
+  // Los eventos iguales de un mismo jugador se agrupan en una sola línea: "Sanchez Ruben (4)".
+  // Va por tipo: las amarillas de un jugador van juntas y su roja en otra línea.
   const timeline: { ev: (typeof sortedEvents)[number]; count: number }[] = [];
-  const goalRows = new Map<string, { ev: (typeof sortedEvents)[number]; count: number }>();
+  const rows = new Map<string, { ev: (typeof sortedEvents)[number]; count: number }>();
   sortedEvents.forEach((ev) => {
-    if (ev.type === 'goal' && ev.playerId) {
-      const existing = goalRows.get(ev.playerId);
+    if (ev.playerId) {
+      const key = `${ev.type}:${ev.playerId}`;
+      const existing = rows.get(key);
       if (existing) {
         existing.count += 1;
         return;
       }
       const row = { ev, count: 1 };
-      goalRows.set(ev.playerId, row);
+      rows.set(key, row);
       timeline.push(row);
       return;
     }
