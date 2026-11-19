@@ -139,9 +139,6 @@ export const MatchCard: React.FC<MatchCardProps> = ({
             const label = (
               <span className="text-[11px] text-slate-300 break-words">
                 <span className="font-semibold">{getPlayerName(ev.playerId, ev.type)}</span>
-                {ev.minute !== undefined && ev.minute !== null && (
-                  <span className="text-slate-400"> {ev.minute}'</span>
-                )}
               </span>
             );
             return (
