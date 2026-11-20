@@ -24,8 +24,6 @@ interface RankItem {
   teamId: string;
   teamColor: string;
   value: number;
-  /** Dato extra opcional que se muestra antes del valor principal (por ejemplo, el promedio). */
-  extra?: string;
 }
 
 export const StatsView: React.FC<StatsViewProps> = ({ tournament }) => {
@@ -37,25 +35,14 @@ export const StatsView: React.FC<StatsViewProps> = ({ tournament }) => {
   const fairPlayStats = calculateFairPlay(tournament.teams, tournament.matches);
   const playerCards = calculatePlayerCards(tournament.teams, tournament.matches);
 
-  // La app no registra en qué partidos jugó cada jugador, así que el promedio de gol por partido
-  // se calcula sobre los partidos terminados de su equipo.
-  const teamMatchesPlayed = (teamId: string) =>
-    tournament.matches.filter(
-      (m) => m.status === 'finished' && (m.homeTeamId === teamId || m.awayTeamId === teamId)
-    ).length;
-
-  const scorerItems: RankItem[] = topScorers.map((s) => {
-    const pj = teamMatchesPlayed(s.teamId);
-    return {
-      key: s.playerId,
-      title: s.playerName,
-      subtitle: s.teamName,
-      teamId: s.teamId,
-      teamColor: s.teamColor,
-      value: s.goals,
-      extra: pj > 0 ? (s.goals / pj).toFixed(2) : '-',
-    };
-  });
+  const scorerItems: RankItem[] = topScorers.map((s) => ({
+    key: s.playerId,
+    title: s.playerName,
+    subtitle: s.teamName,
+    teamId: s.teamId,
+    teamColor: s.teamColor,
+    value: s.goals,
+  }));
 
   // Valla menos vencida: se ordena por el promedio de goles recibidos por partido
   // (así no se castiga a los equipos que jugaron más partidos), y a igual promedio, por menos goles.
@@ -79,24 +66,16 @@ export const StatsView: React.FC<StatsViewProps> = ({ tournament }) => {
   const RankList: React.FC<{
     title: string;
     valueLabel: string;
-    extraLabel?: string;
     items: RankItem[];
     empty: string;
-  }> = ({ title, valueLabel, extraLabel, items, empty }) => {
+  }> = ({ title, valueLabel, items, empty }) => {
     const labels = rankLabels(items.map((i) => i.value));
     const topValue = items.length > 0 ? items[0].value : 0;
     return (
       <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-sm">
-        <div className="bg-slate-950 border-b border-slate-800 px-3 py-3 flex items-center justify-between gap-3">
-          <h2 className="text-sm font-black uppercase tracking-wider text-ink pl-1">{title}</h2>
-          <div className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-            {extraLabel && (
-              <span className="w-12 text-center" title="Promedio de goles por partido (sobre los partidos terminados de su equipo)">
-                {extraLabel}
-              </span>
-            )}
-            <span className={extraLabel ? 'w-10 text-right' : ''}>{valueLabel}</span>
-          </div>
+        <div className="bg-slate-950 border-b border-slate-800 px-4 py-3 flex items-center justify-between">
+          <h2 className="text-sm font-black uppercase tracking-wider text-ink">{title}</h2>
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">{valueLabel}</span>
         </div>
         {items.length === 0 ? (
           <div className="py-6 text-center text-slate-500 text-xs">{empty}</div>
@@ -107,9 +86,7 @@ export const StatsView: React.FC<StatsViewProps> = ({ tournament }) => {
               return (
                 <li
                   key={it.key}
-                  className={`grid ${
-                    extraLabel ? 'grid-cols-[2.25rem,auto,1fr,3rem,2.5rem]' : 'grid-cols-[2.25rem,auto,1fr,auto]'
-                  } items-center gap-3 px-3 ${
+                  className={`grid grid-cols-[2.25rem,auto,1fr,auto] items-center gap-3 px-3 ${
                     isTop ? 'py-3 bg-brand-600 text-white' : 'py-2 hover:bg-slate-800/40'
                   }`}
                 >
@@ -131,11 +108,6 @@ export const StatsView: React.FC<StatsViewProps> = ({ tournament }) => {
                       {it.subtitle}
                     </div>
                   </div>
-                  {extraLabel && (
-                    <span className={`text-center font-mono text-sm ${isTop ? 'text-white/90' : 'text-slate-300'}`}>
-                      {it.extra ?? '-'}
-                    </span>
-                  )}
                   <span className={`font-mono font-black text-right ${isTop ? 'text-2xl text-white' : 'text-base text-ink'}`}>
                     {it.value}
                   </span>
@@ -175,7 +147,6 @@ export const StatsView: React.FC<StatsViewProps> = ({ tournament }) => {
         <RankList
           title="Goleadores"
           valueLabel="Goles"
-          extraLabel="Prom."
           items={scorerItems}
           empty="Aún no hay goles registrados en este torneo."
         />
