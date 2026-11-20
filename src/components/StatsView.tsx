@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Tournament } from '../types/tournament';
-import { calculateTopScorers, calculateFairPlay, calculatePlayerCards } from '../utils/standingsCalculator';
-import { Flame, ShieldCheck, ChevronDown } from 'lucide-react';
+import { calculateTopScorers, calculateFairPlay, calculatePlayerCards, calculateBestDefense } from '../utils/standingsCalculator';
+import { Flame, ShieldCheck, Shield, ChevronDown } from 'lucide-react';
 import { TeamBadge } from './TeamBadge';
 
 interface StatsViewProps {
@@ -27,7 +27,7 @@ interface RankItem {
 }
 
 export const StatsView: React.FC<StatsViewProps> = ({ tournament }) => {
-  const [tab, setTab] = useState<'scorers' | 'fairplay'>('scorers');
+  const [tab, setTab] = useState<'scorers' | 'defense' | 'fairplay'>('scorers');
   const [openTeamId, setOpenTeamId] = useState<string | null>(null);
   const logoOf = (teamId: string) => tournament.teams.find((t) => t.id === teamId)?.logoUrl;
 
@@ -43,6 +43,17 @@ export const StatsView: React.FC<StatsViewProps> = ({ tournament }) => {
     teamColor: s.teamColor,
     value: s.goals,
   }));
+
+  // Valla menos vencida: se ordena por el promedio de goles recibidos por partido
+  // (así no se castiga a los equipos que jugaron más partidos), y a igual promedio, por menos goles.
+  const defenseStats = calculateBestDefense(tournament.teams, tournament.matches).sort(
+    (a, b) =>
+      a.averageGoalsConceded - b.averageGoalsConceded ||
+      a.goalsConceded - b.goalsConceded ||
+      b.matchesPlayed - a.matchesPlayed
+  );
+  const defLabels = rankLabels(defenseStats.map((d) => d.averageGoalsConceded));
+  const defBest = defenseStats.length > 0 ? defenseStats[0].averageGoalsConceded : 0;
 
   // Fair Play: menos puntos = mejor conducta (amarilla 1, roja 3). El mejor grupo va resaltado,
   // salvo que todos estén igualados (por ejemplo, si todavía no hay tarjetas).
@@ -122,6 +133,10 @@ export const StatsView: React.FC<StatsViewProps> = ({ tournament }) => {
           <Flame className="w-3.5 h-3.5 text-amber-400" />
           <span>Goleadores</span>
         </button>
+        <button onClick={() => setTab('defense')} className={tabClass(tab === 'defense')}>
+          <Shield className="w-3.5 h-3.5 text-sky-400" />
+          <span>Valla</span>
+        </button>
         <button onClick={() => setTab('fairplay')} className={tabClass(tab === 'fairplay')}>
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
           <span>Fair Play</span>
@@ -135,6 +150,70 @@ export const StatsView: React.FC<StatsViewProps> = ({ tournament }) => {
           items={scorerItems}
           empty="Aún no hay goles registrados en este torneo."
         />
+      )}
+
+      {tab === 'defense' && (
+        <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-sm">
+          <div className="bg-slate-950 border-b border-slate-800 px-4 py-3">
+            <h2 className="text-sm font-black uppercase tracking-wider text-ink">Valla menos vencida</h2>
+            <p className="mt-1 text-[11px] text-slate-400">
+              Ordenada por el promedio de goles recibidos por partido.
+            </p>
+          </div>
+
+          {defenseStats.length === 0 ? (
+            <div className="py-6 text-center text-slate-500 text-xs">
+              Aún no hay partidos terminados en este torneo.
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-[2.25rem,auto,1fr,2rem,2rem,3rem] items-center gap-2 sm:gap-3 px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400 border-b border-slate-800/80">
+                <span className="text-center">#</span>
+                <span className="w-[30px]" />
+                <span>Club</span>
+                <span className="text-center" title="Partidos jugados">PJ</span>
+                <span className="text-center" title="Goles recibidos">GC</span>
+                <span className="text-right" title="Promedio de goles recibidos por partido">Prom.</span>
+              </div>
+              <ul className="divide-y divide-slate-800/80">
+                {defenseStats.map((d, idx) => {
+                  const isBest = d.averageGoalsConceded === defBest;
+                  return (
+                    <li
+                      key={d.teamId}
+                      className={`grid grid-cols-[2.25rem,auto,1fr,2rem,2rem,3rem] items-center gap-2 sm:gap-3 px-3 ${
+                        isBest ? 'py-3 bg-brand-600 text-white' : 'py-2.5 hover:bg-slate-800/40'
+                      }`}
+                    >
+                      <span className={`text-center font-mono font-bold ${isBest ? 'text-lg' : 'text-xs text-slate-400'}`}>
+                        {defLabels[idx]}
+                      </span>
+                      <TeamBadge
+                        logoUrl={logoOf(d.teamId)}
+                        color={d.teamColor}
+                        name={d.teamName}
+                        size={isBest ? 40 : 34}
+                        fallbackClassName="w-3 h-7 rounded-sm flex-shrink-0"
+                      />
+                      <span className={`truncate font-bold ${isBest ? 'text-base text-white' : 'text-sm text-ink'}`}>
+                        {d.teamName}
+                      </span>
+                      <span className={`text-center font-mono text-sm ${isBest ? 'text-white' : 'text-slate-300'}`}>
+                        {d.matchesPlayed}
+                      </span>
+                      <span className={`text-center font-mono text-sm ${isBest ? 'text-white' : 'text-slate-300'}`}>
+                        {d.goalsConceded}
+                      </span>
+                      <span className={`text-right font-mono font-black ${isBest ? 'text-2xl text-white' : 'text-base text-ink'}`}>
+                        {d.averageGoalsConceded.toFixed(2)}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          )}
+        </div>
       )}
 
       {tab === 'fairplay' && (
