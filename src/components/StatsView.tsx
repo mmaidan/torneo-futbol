@@ -219,12 +219,9 @@ export const StatsView: React.FC<StatsViewProps> = ({ tournament }) => {
       {tab === 'fairplay' && (
         <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-sm">
           <div className="bg-slate-950 border-b border-slate-800 px-4 py-3">
-            <div className="flex items-center justify-between">
-              <h2 className="text-sm font-black uppercase tracking-wider text-ink">Fair Play</h2>
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Puntos</span>
-            </div>
+            <h2 className="text-sm font-black uppercase tracking-wider text-ink">Fair Play</h2>
             <p className="mt-1 text-[11px] text-slate-400">
-              Amarilla = 1 punto, roja = 3. Menos puntos, mejor conducta. Tocá un club para ver sus jugadores.
+              Ordenado de mejor a peor conducta (la roja pesa más que la amarilla). Tocá un club para ver sus jugadores.
             </p>
           </div>
 
@@ -249,7 +246,7 @@ export const StatsView: React.FC<StatsViewProps> = ({ tournament }) => {
                       type="button"
                       onClick={() => setOpenTeamId(isOpen ? null : stat.teamId)}
                       aria-expanded={isOpen}
-                      className={`w-full grid grid-cols-[2rem,auto,1fr,auto,auto,2.5rem,auto] items-center gap-2 sm:gap-3 px-3 text-left transition-colors ${
+                      className={`w-full grid grid-cols-[2rem,auto,1fr,auto,auto,auto] items-center gap-2 sm:gap-3 px-3 text-left transition-colors ${
                         isBest ? 'py-3 bg-brand-600 text-white' : 'py-2.5 hover:bg-slate-800/40'
                       }`}
                     >
@@ -273,9 +270,6 @@ export const StatsView: React.FC<StatsViewProps> = ({ tournament }) => {
                       <span className="flex items-center gap-1 font-mono font-bold text-sm">
                         <span className="inline-block w-2 h-3 rounded-[2px] bg-red-600" />
                         <span className={isBest ? 'text-white' : 'text-rose-400'}>{stat.redCards}</span>
-                      </span>
-                      <span className={`text-right font-mono font-black ${isBest ? 'text-2xl text-white' : 'text-base text-ink'}`}>
-                        {stat.pointsDeducted}
                       </span>
                       <ChevronDown
                         className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''} ${
