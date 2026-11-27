@@ -245,6 +245,105 @@ export function calculatePlayerCards(teams: Team[], matches: Match[]): PlayerCar
   return Array.from(map.values());
 }
 
+export interface YellowSuspensionStat {
+  playerId: string;
+  playerName: string;
+  teamId: string;
+  teamName: string;
+  teamColor: string;
+  /** Amarillas totales del torneo. */
+  totalYellows: number;
+  /** Amarillas acumuladas hacia la próxima suspensión (se reinicia al cumplir una). */
+  cycleYellows: number;
+  /** Cantidad de suspensiones ganadas por acumulación. */
+  suspensionsEarned: number;
+  /** Tiene una suspensión pendiente: todavía no se jugó el partido que debe cumplir. */
+  suspended: boolean;
+  /** Fecha en la que no puede jugar (si ya está definida en el fixture). */
+  suspendedRound?: number;
+}
+
+/**
+ * Suspensión por acumulación de amarillas: cada `threshold` amarillas (3 por defecto) el jugador
+ * se pierde UN partido de su equipo, el siguiente al de la tarjeta que completó el grupo.
+ * Una vez que ese partido se terminó, la suspensión está cumplida, vuelve a estar disponible
+ * y el conteo de amarillas arranca de cero.
+ */
+export function calculateYellowSuspensions(
+  teams: Team[],
+  matches: Match[],
+  threshold = 3
+): YellowSuspensionStat[] {
+  const limit = threshold > 0 ? threshold : 3;
+  const playerToTeam = new Map<string, { player: Team['players'][0]; team: Team }>();
+  teams.forEach((t) => t.players.forEach((p) => playerToTeam.set(p.id, { player: p, team: t })));
+
+  // Partidos en orden cronológico (fecha, día y hora); los postergados no cuentan.
+  const ordered = matches
+    .filter((m) => m.status !== 'postponed')
+    .slice()
+    .sort(
+      (a, b) =>
+        a.round - b.round ||
+        (a.date || '').localeCompare(b.date || '') ||
+        (a.time || '').localeCompare(b.time || '') ||
+        a.id.localeCompare(b.id)
+    );
+
+  const teamMatches = new Map<string, Match[]>();
+  ordered.forEach((m) => {
+    [m.homeTeamId, m.awayTeamId].forEach((tid) => {
+      const list = teamMatches.get(tid) || [];
+      list.push(m);
+      teamMatches.set(tid, list);
+    });
+  });
+
+  const stats = new Map<string, YellowSuspensionStat>();
+
+  ordered.forEach((m) => {
+    (m.events || []).forEach((e) => {
+      if (e.type !== 'yellow_card') return;
+      const found = playerToTeam.get(e.playerId);
+      if (!found) return;
+
+      const st =
+        stats.get(e.playerId) ||
+        ({
+          playerId: found.player.id,
+          playerName: found.player.name,
+          teamId: found.team.id,
+          teamName: found.team.name,
+          teamColor: found.team.color,
+          totalYellows: 0,
+          cycleYellows: 0,
+          suspensionsEarned: 0,
+          suspended: false,
+        } as YellowSuspensionStat);
+      st.totalYellows += 1;
+      st.cycleYellows = st.totalYellows % limit;
+
+      if (st.totalYellows % limit === 0) {
+        // Completó un grupo de amarillas: se pierde el siguiente partido de su equipo.
+        st.suspensionsEarned += 1;
+        const list = teamMatches.get(found.team.id) || [];
+        const i = list.findIndex((x) => x.id === m.id);
+        const next = i >= 0 ? list[i + 1] : undefined;
+        if (next && next.status === 'finished') {
+          st.suspended = false; // ya la cumplió
+          st.suspendedRound = undefined;
+        } else {
+          st.suspended = true; // pendiente: el próximo partido todavía no se jugó
+          st.suspendedRound = next ? next.round : undefined;
+        }
+      }
+      stats.set(e.playerId, st);
+    });
+  });
+
+  return Array.from(stats.values());
+}
+
 export function calculateBestDefense(teams: Team[], matches: Match[]): GoalkeeperStat[] {
   const map = new Map<string, GoalkeeperStat>();
 
